@@ -52,12 +52,13 @@ public class PostController {
 
     @PutMapping("/posts/{postId}")
     public ResponseEntity<CommonResponse<PostResponseDto>> updatePost(
+            @AuthenticationPrincipal UserDetailsImpl userDetails,
             @PathVariable Long postId,
             @RequestBody PostRequestDto requestDto
     ) {
-        PostResponseDto responseDto = postService.updatePost(postId, requestDto);
+        PostResponseDto responseDto = postService.updatePost(userDetails.getUser().getId(),postId, requestDto);
         return ResponseEntity.status(HttpStatus.OK.value()).body(
-                CommonResponse.<PostResponseDto>builder().message("특정 게시물 조회 완료").data(responseDto)
+                CommonResponse.<PostResponseDto>builder().message("특정 게시물 수정 완료").data(responseDto)
                         .build()
         );
     }
