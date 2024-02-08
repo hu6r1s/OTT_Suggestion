@@ -1,8 +1,9 @@
 package com.three.ott_suggestion.post.controller;
 
-import com.three.ott_suggestion.global.CommonResponse;
+import com.three.ott_suggestion.global.response.CommonResponse;
 import com.three.ott_suggestion.post.dto.PostRequestDto;
 import com.three.ott_suggestion.post.service.PostService;
+import com.three.ott_suggestion.user.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,10 +22,10 @@ public class PostController {
     @PostMapping("/posts")
     public ResponseEntity<CommonResponse<Void>> createPost(@RequestBody PostRequestDto requestDto,
             @AuthenticationPrincipal
-            UserDetails userDetails) {
-        postService.createPost(requestDto);
+            UserDetails userDetails, User user) {
+        postService.createPost(requestDto , user);
         return ResponseEntity.status(HttpStatus.CREATED.value()).body(
-                CommonResponse.<Void>builder().msg("일정 생성 완료").build()
+                CommonResponse.<Void>builder().message("일정 생성 완료").build()
         );
     }
 }
