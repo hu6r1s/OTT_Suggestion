@@ -6,6 +6,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class PostRequestDto {
+
     private String title;
     private String contents;
     private String imageUrl;
