@@ -37,11 +37,18 @@ public class CommentService {
          findPost(postId);
          Comment comment = findComment(commentId);
 
-         if (!Objects.equals(comment.getUser().getId(), user.getId())) {
-             throw new AuthenticationException("작성자만 댓글을 수정할 수 있습니다");
-         }
+         validate(comment.getUser().getId(), user.getId());
 
          comment.update(requestDto);
+    }
+
+    @Transactional
+    public void deleteComment(User user, Long postId, Long commentId) {
+        findPost(postId);
+        Comment comment = findComment(commentId);
+
+        validate(comment.getUser().getId(), user.getId());
+        comment.softDelete();
     }
 
     private Post findPost(Long postId) {
@@ -54,5 +61,11 @@ public class CommentService {
         return commentRepository.findById(commentId).orElseThrow(
             () -> new InvalidInputException("해당하는 댓글이 없습니다.")
         );
+    }
+
+    private void validate(Long originId, Long inputId) {
+        if (!Objects.equals(originId, inputId)) {
+            throw new AuthenticationException("작성자가 다릅니다");
+        }
     }
 }

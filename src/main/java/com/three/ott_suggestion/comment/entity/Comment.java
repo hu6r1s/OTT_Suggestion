@@ -12,8 +12,11 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import java.time.LocalDateTime;
+import java.util.Date;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.grammars.hql.HqlParser.LocalDateTimeContext;
 
 @Entity
 @Getter
@@ -27,6 +30,9 @@ public class Comment extends TimeStamped {
 
     @Column(name = "content")
     private String content;
+
+    @Column(name = "deleted_at")
+    private LocalDateTime deletedAt = null;
 
     @ManyToOne
     @JoinColumn(name = "post_id", nullable = false)
@@ -44,5 +50,9 @@ public class Comment extends TimeStamped {
 
     public void update(CommentRequestDto requestDto) {
         this.content = requestDto.getContent();
+    }
+
+    public void softDelete() {
+        this.deletedAt = LocalDateTime.now();
     }
 }
