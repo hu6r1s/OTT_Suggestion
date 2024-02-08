@@ -4,10 +4,12 @@ import com.three.ott_suggestion.comment.dto.CommentRequestDto;
 import com.three.ott_suggestion.comment.dto.CommentResponseDto;
 import com.three.ott_suggestion.comment.entity.Comment;
 import com.three.ott_suggestion.comment.repository.CommentRepository;
+import com.three.ott_suggestion.global.exception.AuthenticationException;
 import com.three.ott_suggestion.global.exception.InvalidInputException;
 import com.three.ott_suggestion.post.entity.Post;
 import com.three.ott_suggestion.post.repository.PostRepository;
 import com.three.ott_suggestion.user.entity.User;
+import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,11 +23,36 @@ public class CommentService {
 
     @Transactional
     public void createComment(User user, Long postId, CommentRequestDto requestDto) {
-        Post post = postRepository.findById(postId).orElseThrow(
-            () -> new InvalidInputException("해당하는 할 일이 없습니다.")
-        );
+        Post post = findPost(postId);
 
         Comment comment = new Comment(requestDto, post, user);
         commentRepository.save(comment);
+    }
+
+    @Transactional
+    public void updateComment(User user,
+        Long postId,
+        Long commentId,
+        CommentRequestDto requestDto) {
+         findPost(postId);
+         Comment comment = findComment(commentId);
+
+         if (!Objects.equals(comment.getUser().getId(), user.getId())) {
+             throw new AuthenticationException("작성자만 댓글을 수정할 수 있습니다");
+         }
+
+         comment.update(requestDto);
+    }
+
+    private Post findPost(Long postId) {
+        return postRepository.findById(postId).orElseThrow(
+            () -> new InvalidInputException("해당하는 할 일이 없습니다.")
+        );
+    }
+
+    private Comment findComment(Long commentId) {
+        return commentRepository.findById(commentId).orElseThrow(
+            () -> new InvalidInputException("해당하는 댓글이 없습니다.")
+        );
     }
 }

@@ -12,6 +12,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -30,6 +31,18 @@ public class CommentController {
         commentService.createComment(user, postId, requestDto);
         return ResponseEntity.status(HttpStatus.CREATED.value()).body(
             CommonResponse.<Void>builder().message("댓글 생성 완료").build());
+    }
+
+    @PutMapping("/posts/{postId}/comments/{commentId}")
+    public ResponseEntity<CommonResponse<Void>> updateComment(
+        @AuthenticationPrincipal UserDetails userDetails,
+        @PathVariable Long postId,
+        @PathVariable Long commentId,
+        @RequestBody CommentRequestDto requestDto,
+        User user) {
+        commentService.updateComment(user, postId, commentId, requestDto);
+        return ResponseEntity.status(HttpStatus.OK.value()).body(
+            CommonResponse.<Void>builder().message("댓글 수정 완료").build());
     }
 }
 
