@@ -1,4 +1,4 @@
-package com.three.ott_suggestion.global.exception;
+package com.three.ott_suggestion.global.response;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
