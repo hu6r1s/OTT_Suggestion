@@ -1,5 +1,6 @@
 package com.three.ott_suggestion.comment.entity;
 
+import com.three.ott_suggestion.comment.dto.CommentRequestDto;
 import com.three.ott_suggestion.global.util.TimeStamped;
 import com.three.ott_suggestion.post.entity.Post;
 import com.three.ott_suggestion.user.entity.User;
@@ -23,6 +24,7 @@ public class Comment extends TimeStamped {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     @Column(name = "content")
     private String content;
 
@@ -34,4 +36,13 @@ public class Comment extends TimeStamped {
     @JoinColumn(name = "user_id", nullable = false)
     public User user;
 
+    public Comment(CommentRequestDto requestDto, Post post, User user) {
+        this.content = requestDto.getContent();
+        this.post = post;
+        this.user = user;
+    }
+
+    public void update(CommentRequestDto requestDto) {
+        this.content = requestDto.getContent();
+    }
 }
