@@ -14,4 +14,8 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     List<Post> findByTitle(String type);
 
     List<Post> findByUserId(Long id);
+
+    Optional<Post> findPostByIdAndDeletedAtIsNull(Long postId);
+
+    List<Post> findAllByDeletedAtIsNull();
 }

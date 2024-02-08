@@ -12,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -70,4 +71,14 @@ public class PostController {
                         .build()
         );
     }
+
+    @DeleteMapping("/posts/{postId}")
+    public ResponseEntity<CommonResponse<Void>> deletePost(
+            @AuthenticationPrincipal UserDetailsImpl userDetails,
+            @PathVariable Long postId) {
+        postService.deleteComment(userDetails.getUser(), postId);
+        return ResponseEntity.status(HttpStatus.OK.value()).body(
+                CommonResponse.<Void>builder().message("게시물 삭제 완료").build());
+    }
+
 }
