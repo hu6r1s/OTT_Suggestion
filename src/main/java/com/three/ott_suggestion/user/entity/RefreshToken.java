@@ -5,28 +5,32 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "users")
+@Table(name = "refresh_tokens")
 @Getter
 @NoArgsConstructor
-public class User {
+public class RefreshToken {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "email", nullable = false, unique = true)
-    private String email;
+    @Column(name = "refresh_token", nullable = false)
+    private String refreshToken;
 
-    @Column(nullable = false)
-    private String password;
 
-    @Column
-    private String nickname;
+    @OneToOne
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
 
-    @Column
-    private String introduction;
+    public RefreshToken(String refreshToken, User user) {
+        this.refreshToken = refreshToken;
+        this.user = user;
+    }
+
 }
