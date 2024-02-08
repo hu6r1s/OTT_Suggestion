@@ -1,5 +1,10 @@
 package com.three.ott_suggestion.comment.dto;
 
-public class CommentRequestDto {
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
+@NoArgsConstructor
+@Getter
+public class CommentRequestDto {
+    private String content;
 }
