@@ -5,6 +5,7 @@ import com.three.ott_suggestion.post.dto.PostRequestDto;
 import com.three.ott_suggestion.user.entity.User;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
