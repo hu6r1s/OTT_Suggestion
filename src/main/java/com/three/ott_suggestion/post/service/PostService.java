@@ -34,12 +34,14 @@ public class PostService {
     }
 
     public List<PostResponseDto> getAllPosts() {
-        return postRepository.findAll().stream().map(PostResponseDto::new)
+        return postRepository.findAllByDeletedAtIsNull().stream().map(PostResponseDto::new)
             .toList();
     }
 
     public PostResponseDto getPost(Long postId) {
-        Post post = findPost(postId);
+        Post post = postRepository.findPostByIdAndDeletedAtIsNull(postId).orElseThrow(
+                () -> new InvalidInputException("해당 게시글은 삭제 되었습니다.")
+        );
         return new PostResponseDto(post);
     }
 
@@ -75,7 +77,7 @@ public class PostService {
         else if(type.equals(PostType.TITLE.type())){
             return postRepository.findByTitle(keyword).stream().map(PostResponseDto::new).toList();
         }
-        throw new InvalidInputException("query 입력값이 잘못 되었습니다 ㅎㅎ.");
+        throw new InvalidInputException("query 입력값이 잘못 되었습니다.");
     }
 
     @Transactional
