@@ -6,13 +6,16 @@ import com.three.ott_suggestion.user.repository.UserRepository;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 @Service
 @RequiredArgsConstructor
 public class UserService {
+
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
     public void signup(SignupRequestDto signupRequestDto) {
 
@@ -28,5 +31,6 @@ public class UserService {
         }
 
         User user = new User(email, password, nickname, introduction);
+        userRepository.save(user);
     }
 }
