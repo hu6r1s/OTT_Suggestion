@@ -8,18 +8,21 @@ import com.three.ott_suggestion.post.repository.PostRepository;
 import com.three.ott_suggestion.user.entity.User;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
+@Slf4j(topic = "service")
 public class PostService {
 
     private final PostRepository postRepository;
 
     @Transactional
     public void createPost(PostRequestDto requestDto, User user) {
+        log.info(user.getEmail());
         Post post = new Post(requestDto, user);
         postRepository.save(post);
     }

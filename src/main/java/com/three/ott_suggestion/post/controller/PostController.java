@@ -1,6 +1,7 @@
 package com.three.ott_suggestion.post.controller;
 
 import com.three.ott_suggestion.global.response.CommonResponse;
+import com.three.ott_suggestion.global.util.UserDetailsImpl;
 import com.three.ott_suggestion.post.dto.PostRequestDto;
 import com.three.ott_suggestion.post.dto.PostResponseDto;
 import com.three.ott_suggestion.post.service.PostService;
@@ -27,8 +28,8 @@ public class PostController {
     @PostMapping("/posts")
     public ResponseEntity<CommonResponse<Void>> createPost(@RequestBody PostRequestDto requestDto,
         @AuthenticationPrincipal
-        UserDetails userDetails, User user) {
-        postService.createPost(requestDto, user);
+        UserDetailsImpl userDetails) {
+        postService.createPost(requestDto, userDetails.getUser());
         return ResponseEntity.status(HttpStatus.CREATED.value()).body(
             CommonResponse.<Void>builder().message("일정 생성 완료").build()
         );
