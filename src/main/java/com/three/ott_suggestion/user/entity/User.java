@@ -1,6 +1,7 @@
 package com.three.ott_suggestion.user.entity;
 
 import com.three.ott_suggestion.global.util.TimeStamped;
+import com.three.ott_suggestion.user.dto.UpdateRequestDto;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -38,5 +39,10 @@ public class User extends TimeStamped {
         this.password = password;
         this.nickname = nickname;
         this.introduction = introduction;
+    }
+
+    public void update(UpdateRequestDto requestDto) {
+        this.nickname = requestDto.getNickname();
+        this.introduction = requestDto.getIntroduction();
     }
 }
