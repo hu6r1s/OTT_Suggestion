@@ -1,11 +1,14 @@
 package com.three.ott_suggestion.post.service;
 
+import com.three.ott_suggestion.global.exception.InvalidInputException;
 import com.three.ott_suggestion.global.exception.InvalidPostException;
+import com.three.ott_suggestion.global.exception.InvalidUserException;
 import com.three.ott_suggestion.post.dto.PostRequestDto;
 import com.three.ott_suggestion.post.dto.PostResponseDto;
 import com.three.ott_suggestion.post.entity.Post;
 import com.three.ott_suggestion.post.repository.PostRepository;
 import com.three.ott_suggestion.user.entity.User;
+import com.three.ott_suggestion.user.repository.UserRepository;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class PostService {
 
     private final PostRepository postRepository;
+    private final UserRepository userRepository;
 
     @Transactional
     public void createPost(PostRequestDto requestDto, User user) {
@@ -38,7 +42,7 @@ public class PostService {
     }
 
 
-    public Post findPost(Long postId) {
+    private Post findPost(Long postId) {
         return postRepository.findById(postId).orElseThrow(
             () -> {
                 String message = "해당 게시글이 없습니다.";
@@ -48,11 +52,16 @@ public class PostService {
     }
 
     @Transactional
-    public PostResponseDto updatePost(Long postId, PostRequestDto requestDto) {
-        Post post = postRepository.findById(postId)
-                .orElseThrow(() ->
-                    new InvalidPostException("해당 게시글이 없습니다."));
+    public PostResponseDto updatePost(Long userId, Long postId, PostRequestDto requestDto) {
+        Post post = findPost(postId);
+        validateUser(userId, post);
         post.update(requestDto);
         return new PostResponseDto(post);
+    }
+
+    private void validateUser(Long userId, Post post) {
+        if(userId != post.getUser().getId()){
+            throw new InvalidUserException("해당 게시글의 유저가 아닙니다.");
+        }
     }
 }
