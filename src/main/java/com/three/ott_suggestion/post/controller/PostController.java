@@ -14,6 +14,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -46,5 +47,17 @@ public class PostController {
         PostResponseDto postResponseDto = postService.getPost(postId);
         return ResponseEntity.ok().body(CommonResponse.<PostResponseDto>builder()
             .data(postResponseDto).build());
+    }
+
+    @PutMapping("/posts/{postId}")
+    public ResponseEntity<CommonResponse<PostResponseDto>> updatePost(
+            @PathVariable Long postId,
+            @RequestBody PostRequestDto requestDto
+    ) {
+        PostResponseDto responseDto = postService.updatePost(postId, requestDto);
+        return ResponseEntity.status(HttpStatus.OK.value()).body(
+                CommonResponse.<PostResponseDto>builder().message("특정 게시물 조회 완료").data(responseDto)
+                        .build()
+        );
     }
 }

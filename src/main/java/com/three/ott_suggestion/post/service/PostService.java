@@ -25,7 +25,7 @@ public class PostService {
     }
 
     public List<PostResponseDto> getAllPosts() {
-        return postRepository.findAll().stream().map(e -> new PostResponseDto(e, e.getUser()))
+        return postRepository.findAll().stream().map(PostResponseDto::new)
             .toList();
     }
 
@@ -42,5 +42,13 @@ public class PostService {
                 return new InvalidPostException(message);
             }
         );
+    }
+
+    @Transactional
+    public PostResponseDto updatePost(Long postId, PostRequestDto requestDto) {
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new NullPointerException("포스트가 존재하지않습니다."));
+        post.update(requestDto);
+        return new PostResponseDto(post);
     }
 }

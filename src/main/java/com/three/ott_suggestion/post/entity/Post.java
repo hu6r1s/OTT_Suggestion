@@ -43,6 +43,12 @@ public class Post extends TimeStamped {
         this.image = requestDto.getImageUrl();
         this.user = user;
     }
+
+    public void update(PostRequestDto requestDto) {
+        this.title = requestDto.getTitle();
+        this.content = requestDto.getContents();
+        this.image = requestDto.getImageUrl();
+    }
 }
 
 
