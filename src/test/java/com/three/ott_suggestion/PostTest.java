@@ -31,18 +31,18 @@ public class PostTest {
     public void createPostTest() throws Exception {
         //given
         User user = new User();
-        user.setEmail("1234@email.com");
+        user.setEmail("thdTjs1219@email.com");
         user.setIntroduction("안녕하세요");
-        user.setPassword("1234");
+        user.setPassword("thdT12345!!");
         user.setNickname("nick");
 
         userRepository.save(user);
 
         PostRequestDto requestDto = new PostRequestDto();
 
-        requestDto.setTitle("title");
-        requestDto.setContents("contents");
-        requestDto.setImageUrl("image");
+        requestDto.setTitle("title23");
+        requestDto.setContents("contents23");
+        requestDto.setImageUrl("image23");
 
         Post post = new Post(requestDto,user);
 
