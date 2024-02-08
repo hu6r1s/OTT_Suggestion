@@ -15,6 +15,11 @@ public class LikeService {
     private final LikeRepository likeRepository;
     private final PostService postService;
 
+    public Long countLikes(Long postId) {
+        postService.findPost(postId);
+        return likeRepository.countByPostId(postId);
+    }
+
     @Transactional
     public String likePost(Long postId, User user) {
         postService.findPost(postId);
@@ -24,7 +29,7 @@ public class LikeService {
             return "좋아요";
         }
         Like like = likeRepository.findByUserIdAndPostId(user.getId(), postId).orElseThrow(
-            ()-> new InvalidInputException("좋아요를 할 수 없습니다.")
+            () -> new InvalidInputException("좋아요를 할 수 없습니다.")
         );
         likeRepository.delete(like);
         return "좋아요 취소";
