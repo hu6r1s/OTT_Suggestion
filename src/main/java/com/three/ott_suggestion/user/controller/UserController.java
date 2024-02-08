@@ -27,7 +27,7 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping("/signup")
-    public ResponseEntity<CommonResponse<Void>> signup(
+    public ResponseEntity<CommonResponse<List<ErrorResponse>>> signup(
         @RequestBody @Valid SignupRequestDto signupRequestDto, BindingResult bindingResult) {
 
         // Validation 예외처리
@@ -39,13 +39,14 @@ public class UserController {
                 ErrorResponseList.add(exceptionResponse);
             }
             return ResponseEntity.status(HttpStatus.BAD_REQUEST.value()).body(
-                CommonResponse.<Void>builder().message("회원가입 실패").build());
+                CommonResponse.<List<ErrorResponse>>builder().message("회원가입 실패")
+                    .data(ErrorResponseList).build());
         }
 
         userService.signup(signupRequestDto);
 
         return ResponseEntity.status(HttpStatus.OK.value()).body(
-            CommonResponse.<Void>builder().message("회원가입 성공").build()
+            CommonResponse.<List<ErrorResponse>>builder().message("회원가입 성공").build()
         );
     }
 }
