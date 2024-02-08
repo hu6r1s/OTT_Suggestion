@@ -44,7 +44,7 @@ public class PostService {
     }
 
 
-    private Post findPost(Long postId) {
+    public Post findPost(Long postId) {
         return postRepository.findById(postId).orElseThrow(
             () -> {
                 String message = "해당 게시글이 없습니다.";
