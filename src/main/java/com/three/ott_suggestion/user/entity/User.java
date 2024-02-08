@@ -32,4 +32,11 @@ public class User extends TimeStamped {
 
     @Column
     private String introduction;
+
+    public User(String email, String password, String nickname, String introduction) {
+        this.email = email;
+        this.password = password;
+        this.nickname = nickname;
+        this.introduction = introduction;
+    }
 }
