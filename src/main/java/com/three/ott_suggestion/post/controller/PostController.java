@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -31,7 +32,7 @@ public class PostController {
         UserDetailsImpl userDetails) {
         postService.createPost(requestDto, userDetails.getUser());
         return ResponseEntity.status(HttpStatus.CREATED.value()).body(
-            CommonResponse.<Void>builder().message("일정 생성 완료").build()
+            CommonResponse.<Void>builder().message("게시물 생성 완료").build()
         );
     }
 
@@ -40,7 +41,6 @@ public class PostController {
         List<PostResponseDto> postResponseDtos = postService.getAllPosts();
         return ResponseEntity.ok().body(CommonResponse.<List<PostResponseDto>>builder()
             .data(postResponseDtos).build());
-
     }
 
     @GetMapping("/posts/{postId}")
@@ -48,6 +48,14 @@ public class PostController {
         PostResponseDto postResponseDto = postService.getPost(postId);
         return ResponseEntity.ok().body(CommonResponse.<PostResponseDto>builder()
             .data(postResponseDto).build());
+    }
+
+    @GetMapping("/posts/search")
+    public ResponseEntity<CommonResponse<List<PostResponseDto>>> searchPost(
+            @RequestParam String type,
+            @RequestParam String keyword
+    ){
+        return ResponseEntity.ok().body(CommonResponse.<List<PostResponseDto>>builder().data(postService.searchPost(type, keyword)).build());
     }
 
     @PutMapping("/posts/{postId}")

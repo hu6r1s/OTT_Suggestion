@@ -26,4 +26,8 @@ public class UserService {
         );
         user.update(requestDto);
     }
+
+    public User findUser(String nickname){
+        return userRepository.findByNickname(nickname);
+    }
 }

@@ -3,15 +3,17 @@ package com.three.ott_suggestion.post.service;
 import com.three.ott_suggestion.global.exception.InvalidInputException;
 import com.three.ott_suggestion.global.exception.InvalidPostException;
 import com.three.ott_suggestion.global.exception.InvalidUserException;
+import com.three.ott_suggestion.post.PostType;
 import com.three.ott_suggestion.post.dto.PostRequestDto;
 import com.three.ott_suggestion.post.dto.PostResponseDto;
 import com.three.ott_suggestion.post.entity.Post;
 import com.three.ott_suggestion.post.repository.PostRepository;
 import com.three.ott_suggestion.user.entity.User;
-import com.three.ott_suggestion.user.repository.UserRepository;
+import com.three.ott_suggestion.user.service.UserService;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,7 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class PostService {
 
     private final PostRepository postRepository;
-    private final UserRepository userRepository;
+    private final UserService userService;
 
     @Transactional
     public void createPost(PostRequestDto requestDto, User user) {
@@ -63,5 +65,16 @@ public class PostService {
         if(userId != post.getUser().getId()){
             throw new InvalidUserException("해당 게시글의 유저가 아닙니다.");
         }
+    }
+
+    public List<PostResponseDto> searchPost(String type, String keyword) {
+        if(type.equals(PostType.NICKNAME.type())){
+            User user = userService.findUser(keyword);
+            return postRepository.findByUserId(user.getId()).stream().map(PostResponseDto::new).toList();
+        }
+        else if(type.equals(PostType.TITLE.type())){
+            return postRepository.findByTitle(keyword).stream().map(PostResponseDto::new).toList();
+        }
+        throw new InvalidInputException("query 입력값이 잘못 되었습니다 ㅎㅎ.");
     }
 }
