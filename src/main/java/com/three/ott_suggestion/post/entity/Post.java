@@ -12,6 +12,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import java.time.LocalDateTime;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -31,6 +32,9 @@ public class Post extends TimeStamped {
     @Column(columnDefinition = "TEXT", nullable = false)
     private String content;
 
+    @Column(name = "deleted_at")
+    private LocalDateTime deletedAt;
+
     @Column
     private String image;
 
@@ -49,6 +53,10 @@ public class Post extends TimeStamped {
         this.title = requestDto.getTitle();
         this.content = requestDto.getContents();
         this.image = requestDto.getImageUrl();
+    }
+
+    public void softDelete(){
+        this.deletedAt = LocalDateTime.now();
     }
 }
 

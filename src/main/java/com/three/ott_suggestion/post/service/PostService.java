@@ -77,4 +77,11 @@ public class PostService {
         }
         throw new InvalidInputException("query 입력값이 잘못 되었습니다 ㅎㅎ.");
     }
+
+    @Transactional
+    public void deleteComment(User user, Long postId) {
+        Post post = findPost(postId);
+        validateUser(user.getId(), post);
+        post.softDelete();
+    }
 }
