@@ -50,7 +50,8 @@ public class PostService {
     @Transactional
     public PostResponseDto updatePost(Long postId, PostRequestDto requestDto) {
         Post post = postRepository.findById(postId)
-                .orElseThrow(() -> new NullPointerException("포스트가 존재하지않습니다."));
+                .orElseThrow(() ->
+                    new InvalidPostException("해당 게시글이 없습니다."));
         post.update(requestDto);
         return new PostResponseDto(post);
     }
