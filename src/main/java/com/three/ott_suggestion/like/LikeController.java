@@ -2,8 +2,10 @@ package com.three.ott_suggestion.like;
 
 import com.three.ott_suggestion.global.response.CommonResponse;
 import com.three.ott_suggestion.global.util.UserDetailsImpl;
+import com.three.ott_suggestion.post.entity.Post;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -37,4 +39,10 @@ public class LikeController {
 
     }
 
+    @GetMapping("/posts/sort")
+    public List<Like> highCountSorted(
+        @AuthenticationPrincipal UserDetailsImpl userDetails
+    ) {
+        return likeService.highCountSorted();
+    }
 }

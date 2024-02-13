@@ -1,8 +1,12 @@
 package com.three.ott_suggestion.like;
 
 import com.three.ott_suggestion.global.exception.InvalidInputException;
+import com.three.ott_suggestion.post.entity.Post;
 import com.three.ott_suggestion.post.service.PostService;
 import com.three.ott_suggestion.user.entity.User;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,5 +37,14 @@ public class LikeService {
         );
         likeRepository.delete(like);
         return "좋아요 취소";
+    }
+
+    public List<Like> highCountSorted() {
+        List<Object[]> results = likeRepository.findTop3MostLikedPosts();
+        List<Like> likes = new ArrayList<>();
+        for (Object[] result : results) {
+            likes.add(new Like((Long) result[0], null));
+        }
+        return likes;
     }
 }
