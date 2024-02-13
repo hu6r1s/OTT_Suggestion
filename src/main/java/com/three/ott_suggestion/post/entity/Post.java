@@ -1,12 +1,11 @@
 package com.three.ott_suggestion.post.entity;
 
 import com.three.ott_suggestion.global.util.TimeStamped;
-import com.three.ott_suggestion.image.Image;
+import com.three.ott_suggestion.image.PostImage;
 import com.three.ott_suggestion.post.dto.PostRequestDto;
 import com.three.ott_suggestion.user.entity.User;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -40,7 +39,7 @@ public class Post extends TimeStamped {
 
     @ManyToOne
     @JoinColumn(name = "image_id", nullable = false)
-    private Image image;
+    private PostImage postImage;
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
@@ -57,11 +56,11 @@ public class Post extends TimeStamped {
         this.content = requestDto.getContents();
     }
 
-    public void createImage(Image image){
-        this.image = image;
+    public void createImage(PostImage image) {
+        this.postImage = image;
     }
 
-    public void softDelete(){
+    public void softDelete() {
         this.deletedAt = LocalDateTime.now();
     }
 }

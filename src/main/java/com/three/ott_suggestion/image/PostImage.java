@@ -13,10 +13,10 @@ import lombok.NoArgsConstructor;
 @Builder
 @Entity
 @Getter
-@Table(name = "images")
+@Table(name = "post_images")
 @AllArgsConstructor
 @NoArgsConstructor
-public class Image {
+public class PostImage {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

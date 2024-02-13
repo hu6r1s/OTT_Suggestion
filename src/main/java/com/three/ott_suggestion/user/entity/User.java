@@ -1,12 +1,15 @@
 package com.three.ott_suggestion.user.entity;
 
 import com.three.ott_suggestion.global.util.TimeStamped;
+import com.three.ott_suggestion.image.UserImage;
 import com.three.ott_suggestion.user.dto.UpdateRequestDto;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.Builder;
 import lombok.Getter;
@@ -34,6 +37,10 @@ public class User extends TimeStamped {
     @Column
     private String introduction;
 
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private UserImage userImage;
+
     public User(String email, String password, String nickname, String introduction) {
         this.email = email;
         this.password = password;
@@ -44,5 +51,9 @@ public class User extends TimeStamped {
     public void update(UpdateRequestDto requestDto) {
         this.nickname = requestDto.getNickname();
         this.introduction = requestDto.getIntroduction();
+    }
+
+    public void createImage(UserImage userImage){
+        this.userImage = userImage;
     }
 }
