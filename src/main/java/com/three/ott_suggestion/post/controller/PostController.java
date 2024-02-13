@@ -5,8 +5,10 @@ import com.three.ott_suggestion.global.util.UserDetailsImpl;
 import com.three.ott_suggestion.post.dto.PostRequestDto;
 import com.three.ott_suggestion.post.dto.PostResponseDto;
 import com.three.ott_suggestion.post.service.PostService;
+import java.net.MalformedURLException;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -18,18 +20,23 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequiredArgsConstructor
+@Slf4j(topic = "포스트")
 public class PostController {
 
     private final PostService postService;
 
     @PostMapping("/posts")
-    public ResponseEntity<CommonResponse<Void>> createPost(@RequestBody PostRequestDto requestDto,
+    public ResponseEntity<CommonResponse<Void>> createPost(
+            @RequestParam String title,
+            @RequestParam String contents,
+            @RequestParam MultipartFile file,
             @AuthenticationPrincipal
-            UserDetailsImpl userDetails) {
-        postService.createPost(requestDto, userDetails.getUser());
+            UserDetailsImpl userDetails) throws Exception {
+        postService.createPost(title, contents, userDetails.getUser(), file);
         return ResponseEntity.status(HttpStatus.CREATED.value()).body(
                 CommonResponse.<Void>builder().message("게시물 생성 완료").build()
         );
@@ -43,7 +50,8 @@ public class PostController {
     }
 
     @GetMapping("/posts/{postId}")
-    public ResponseEntity<CommonResponse<PostResponseDto>> getPost(@PathVariable Long postId) {
+    public ResponseEntity<CommonResponse<PostResponseDto>> getPost(@PathVariable Long postId)
+            throws MalformedURLException {
         PostResponseDto postResponseDto = postService.getPost(postId);
         return ResponseEntity.ok().body(CommonResponse.<PostResponseDto>builder()
                 .data(postResponseDto).build());

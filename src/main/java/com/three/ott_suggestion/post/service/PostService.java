@@ -3,6 +3,8 @@ package com.three.ott_suggestion.post.service;
 import com.three.ott_suggestion.global.exception.InvalidInputException;
 import com.three.ott_suggestion.global.exception.InvalidPostException;
 import com.three.ott_suggestion.global.exception.InvalidUserException;
+import com.three.ott_suggestion.image.Image;
+import com.three.ott_suggestion.image.ImageService;
 import com.three.ott_suggestion.post.SearchType;
 import com.three.ott_suggestion.post.dto.PostRequestDto;
 import com.three.ott_suggestion.post.dto.PostResponseDto;
@@ -10,11 +12,13 @@ import com.three.ott_suggestion.post.entity.Post;
 import com.three.ott_suggestion.post.repository.PostRepository;
 import com.three.ott_suggestion.user.entity.User;
 import com.three.ott_suggestion.user.service.UserService;
+import java.net.MalformedURLException;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 @Service
 @RequiredArgsConstructor
@@ -24,11 +28,15 @@ public class PostService {
 
     private final PostRepository postRepository;
     private final UserService userService;
+    private final ImageService imageService;
 
     @Transactional
-    public void createPost(PostRequestDto requestDto, User user) {
+    public void createPost(String title, String contents, User user, MultipartFile file)
+            throws Exception {
         log.info(user.getEmail());
-        Post post = new Post(requestDto, user);
+        Post post = new Post(title, contents, user);
+        Image image = imageService.createImage(file);
+        post.createImage(image);
         postRepository.save(post);
     }
 
@@ -37,10 +45,11 @@ public class PostService {
                 .toList();
     }
 
-    public PostResponseDto getPost(Long postId) {
+    public PostResponseDto getPost(Long postId) throws MalformedURLException {
         Post post = postRepository.findPostByIdAndDeletedAtIsNull(postId).orElseThrow(
                 () -> new InvalidInputException("해당 게시글은 삭제 되었습니다.")
         );
+        imageService.getFile(postId);
         return new PostResponseDto(post);
     }
 

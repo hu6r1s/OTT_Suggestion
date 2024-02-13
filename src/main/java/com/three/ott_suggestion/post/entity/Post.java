@@ -1,6 +1,7 @@
 package com.three.ott_suggestion.post.entity;
 
 import com.three.ott_suggestion.global.util.TimeStamped;
+import com.three.ott_suggestion.image.Image;
 import com.three.ott_suggestion.post.dto.PostRequestDto;
 import com.three.ott_suggestion.user.entity.User;
 import jakarta.persistence.Column;
@@ -37,24 +38,27 @@ public class Post extends TimeStamped {
     @Column(name = "deleted_at")
     private LocalDateTime deletedAt;
 
-    @Column
-    private String image;
+    @ManyToOne
+    @JoinColumn(name = "image_id", nullable = false)
+    private Image image;
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     public User user;
 
-    public Post(PostRequestDto requestDto, User user) {
-        this.title = requestDto.getTitle();
-        this.content = requestDto.getContents();
-        this.image = requestDto.getImageUrl();
+    public Post(String title, String contents, User user) {
+        this.title = title;
+        this.content = contents;
         this.user = user;
     }
 
     public void update(PostRequestDto requestDto) {
         this.title = requestDto.getTitle();
         this.content = requestDto.getContents();
-        this.image = requestDto.getImageUrl();
+    }
+
+    public void createImage(Image image){
+        this.image = image;
     }
 
     public void softDelete(){
