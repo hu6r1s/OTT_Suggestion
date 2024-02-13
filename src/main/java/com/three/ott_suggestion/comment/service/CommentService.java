@@ -34,7 +34,6 @@ public class CommentService {
         findPost(postId);
         List<Comment> comments = commentRepository.findAllByPostId(postId);
         return comments.stream()
-            .filter(comment -> comment.getDeletedAt() == null)
             .map(CommentResponseDto::new)
             .toList();
     }
