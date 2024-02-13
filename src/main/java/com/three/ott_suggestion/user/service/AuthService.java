@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 @Service
@@ -21,6 +22,7 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
     private final RefreshTokenRepository refreshTokenRepository;
 
+    @Transactional
     public void signup(SignupRequestDto signupRequestDto) {
 
         String email = signupRequestDto.getEmail();
@@ -38,6 +40,7 @@ public class AuthService {
         userRepository.save(user);
     }
 
+    @Transactional
     public void logout(UserDetails userDetails) {
         User user = userRepository.findByEmail(userDetails.getUsername()).orElseThrow(() ->
             new IllegalArgumentException("User가 존재하지 않습니다.")

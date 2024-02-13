@@ -40,7 +40,7 @@ public class UserController {
                 .data(userService.getUserInfo(userDetails)).build());
     }
 
-    @PutMapping("/")
+    @PutMapping
     public ResponseEntity<CommonResponse<List<ErrorResponse>>> update(
         @AuthenticationPrincipal UserDetailsImpl userDetails,
         @Valid @RequestBody UpdateRequestDto requestDto,
