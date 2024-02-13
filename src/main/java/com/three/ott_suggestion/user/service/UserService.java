@@ -5,6 +5,7 @@ import com.three.ott_suggestion.user.dto.UpdateRequestDto;
 import com.three.ott_suggestion.user.dto.UserResponseDto;
 import com.three.ott_suggestion.user.entity.User;
 import com.three.ott_suggestion.user.repository.UserRepository;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,7 +28,7 @@ public class UserService {
         user.update(requestDto);
     }
 
-    public User findUser(String nickname){
-        return userRepository.findByNickname(nickname);
+    public List<User> findContainUser(String nickname) {
+        return userRepository.findByNicknameContains(nickname);
     }
 }

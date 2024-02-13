@@ -27,11 +27,11 @@ public class PostController {
 
     @PostMapping("/posts")
     public ResponseEntity<CommonResponse<Void>> createPost(@RequestBody PostRequestDto requestDto,
-            @AuthenticationPrincipal
-            UserDetailsImpl userDetails) {
+        @AuthenticationPrincipal
+        UserDetailsImpl userDetails) {
         postService.createPost(requestDto, userDetails.getUser());
         return ResponseEntity.status(HttpStatus.CREATED.value()).body(
-                CommonResponse.<Void>builder().message("게시물 생성 완료").build()
+            CommonResponse.<Void>builder().message("게시물 생성 완료").build()
         );
     }
 
@@ -39,45 +39,45 @@ public class PostController {
     public ResponseEntity<CommonResponse<List<PostResponseDto>>> getAllPosts() {
         List<PostResponseDto> postResponseDtos = postService.getAllPosts();
         return ResponseEntity.ok().body(CommonResponse.<List<PostResponseDto>>builder()
-                .data(postResponseDtos).build());
+            .data(postResponseDtos).build());
     }
 
     @GetMapping("/posts/{postId}")
     public ResponseEntity<CommonResponse<PostResponseDto>> getPost(@PathVariable Long postId) {
         PostResponseDto postResponseDto = postService.getPost(postId);
         return ResponseEntity.ok().body(CommonResponse.<PostResponseDto>builder()
-                .data(postResponseDto).build());
+            .data(postResponseDto).build());
     }
 
     @GetMapping("/posts/search")
-    public ResponseEntity<CommonResponse<List<PostResponseDto>>> searchPost(
-            @RequestParam String type,
-            @RequestParam String keyword
+    public ResponseEntity<CommonResponse<List<List<PostResponseDto>>>> searchPost(
+        @RequestParam String type,
+        @RequestParam String keyword
     ) {
-        return ResponseEntity.ok().body(CommonResponse.<List<PostResponseDto>>builder()
-                .data(postService.searchPost(type, keyword)).build());
+        return ResponseEntity.ok().body(CommonResponse.<List<List<PostResponseDto>>>builder()
+            .data(postService.searchPost(type, keyword)).build());
     }
 
     @PutMapping("/posts/{postId}")
     public ResponseEntity<CommonResponse<PostResponseDto>> updatePost(
-            @AuthenticationPrincipal UserDetailsImpl userDetails,
-            @PathVariable Long postId,
-            @RequestBody PostRequestDto requestDto
+        @AuthenticationPrincipal UserDetailsImpl userDetails,
+        @PathVariable Long postId,
+        @RequestBody PostRequestDto requestDto
     ) {
         PostResponseDto responseDto = postService.updatePost(userDetails.getUser().getId(), postId,
-                requestDto);
+            requestDto);
         return ResponseEntity.status(HttpStatus.OK.value()).body(
-                CommonResponse.<PostResponseDto>builder().message("특정 게시물 수정 완료").data(responseDto)
-                        .build()
+            CommonResponse.<PostResponseDto>builder().message("특정 게시물 수정 완료").data(responseDto)
+                .build()
         );
     }
 
     @DeleteMapping("/posts/{postId}")
     public ResponseEntity<CommonResponse<Void>> deletePost(
-            @AuthenticationPrincipal UserDetailsImpl userDetails,
-            @PathVariable Long postId) {
+        @AuthenticationPrincipal UserDetailsImpl userDetails,
+        @PathVariable Long postId) {
         postService.deletePost(userDetails.getUser(), postId);
         return ResponseEntity.status(HttpStatus.OK.value()).body(
-                CommonResponse.<Void>builder().message("게시물 삭제 완료").build());
+            CommonResponse.<Void>builder().message("게시물 삭제 완료").build());
     }
 }
