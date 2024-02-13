@@ -10,6 +10,7 @@ import com.three.ott_suggestion.post.entity.Post;
 import com.three.ott_suggestion.post.repository.PostRepository;
 import com.three.ott_suggestion.user.entity.User;
 import com.three.ott_suggestion.user.service.UserService;
+import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -34,12 +35,12 @@ public class PostService {
 
     public List<PostResponseDto> getAllPosts() {
         return postRepository.findAllByDeletedAtIsNull().stream().map(PostResponseDto::new)
-                .toList();
+            .toList();
     }
 
     public PostResponseDto getPost(Long postId) {
         Post post = postRepository.findPostByIdAndDeletedAtIsNull(postId).orElseThrow(
-                () -> new InvalidInputException("해당 게시글은 삭제 되었습니다.")
+            () -> new InvalidInputException("해당 게시글은 삭제 되었습니다.")
         );
         return new PostResponseDto(post);
     }
@@ -52,13 +53,21 @@ public class PostService {
         return new PostResponseDto(post);
     }
 
-    public List<PostResponseDto> searchPost(String type, String keyword) {
+    public List<List<PostResponseDto>> searchPost(String type, String keyword) {
+        List<List<PostResponseDto>> searchResult = new ArrayList<>();
         if (type.equals(SearchType.NICKNAME.type())) {
-            User user = userService.findUser(keyword);
-            return postRepository.findByUserId(user.getId()).stream().map(PostResponseDto::new)
-                    .toList();
+            List<User> users = userService.findContainUser(keyword);
+            for (User user : users) {
+                searchResult.add(
+                    postRepository.findByUserId(user.getId()).stream().map(PostResponseDto::new)
+                        .toList());
+            }
+            return searchResult;
         } else if (type.equals(SearchType.TITLE.type())) {
-            return postRepository.findByTitle(keyword).stream().map(PostResponseDto::new).toList();
+            searchResult.add(
+                postRepository.findByTitleContains(keyword).stream().map(PostResponseDto::new)
+                    .toList());
+            return searchResult;
         }
         throw new InvalidInputException("query 입력값이 잘못 되었습니다.");
     }
@@ -78,10 +87,10 @@ public class PostService {
 
     public Post findPost(Long postId) {
         return postRepository.findById(postId).orElseThrow(
-                () -> {
-                    String message = "해당 게시글이 없습니다.";
-                    return new InvalidPostException(message);
-                }
+            () -> {
+                String message = "해당 게시글이 없습니다.";
+                return new InvalidPostException(message);
+            }
         );
     }
 }
