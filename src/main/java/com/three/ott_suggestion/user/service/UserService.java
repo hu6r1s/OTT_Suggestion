@@ -1,5 +1,6 @@
 package com.three.ott_suggestion.user.service;
 
+import com.three.ott_suggestion.global.exception.InvalidInputException;
 import com.three.ott_suggestion.global.util.UserDetailsImpl;
 import com.three.ott_suggestion.user.dto.UpdateRequestDto;
 import com.three.ott_suggestion.user.dto.UserResponseDto;
@@ -29,5 +30,11 @@ public class UserService {
 
     public User findUser(String nickname){
         return userRepository.findByNickname(nickname);
+    }
+
+    public User findUser(Long userId) {
+        return userRepository.findById(userId).orElseThrow(
+            () -> new InvalidInputException("해당 User는 존재하지 않습니다.")
+        );
     }
 }
