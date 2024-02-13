@@ -63,7 +63,6 @@ public class AuthController {
 
     @GetMapping("/verify")
     public ResponseEntity<CommonResponse<Void>> verifyUser(@RequestParam String code) {
-        System.out.println(code);
         if (authService.verify(code)) {
             return ResponseEntity.status(HttpStatus.OK.value()).body(
                 CommonResponse.<Void>builder().message("이메일 인증 완료").build()

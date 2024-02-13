@@ -51,7 +51,6 @@ public class AuthService {
     }
 
     public boolean verify(String verificationCode) {
-        System.out.println(verificationCode);
         User user = userRepository.findByVerificationCode(verificationCode);
 
         if (user == null || user.isEnabled()) {
