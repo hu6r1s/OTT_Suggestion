@@ -20,14 +20,14 @@ public class LikeController {
 
     private final LikeService likeService;
 
-    @Operation(summary = "좋아요", description = "좋아요 할 수 있는 API")
+    @Operation(summary = "좋아요 개수", description = "좋아요 개수 조회할 수 있는 API")
     @GetMapping("/posts/{postId}/like")
     public ResponseEntity<CommonResponse<Long>> countLikes(@PathVariable Long postId) {
         return ResponseEntity.ok().body(CommonResponse.<Long>builder()
             .data(likeService.countLikes(postId)).build());
     }
 
-    @Operation(summary = "좋아요 취소", description = "좋아요 취소할 수 있는 API")
+    @Operation(summary = "좋아요 선택/취소", description = "좋아요 선택/취소할 수 있는 API")
     @PostMapping("/posts/{postId}/like")
     public ResponseEntity<CommonResponse<Void>> likePost(@PathVariable Long postId,
         @AuthenticationPrincipal
