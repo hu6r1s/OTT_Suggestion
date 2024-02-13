@@ -14,5 +14,5 @@ public interface PostRepository extends JpaRepository<Post, Long> {
 
     Optional<Post> findPostByIdAndDeletedAtIsNull(Long postId);
 
-    List<Post> findAllByDeletedAtIsNull();
+    List<Post> findAllByDeletedAtIsNullOrderByCreatedAtDesc();
 }

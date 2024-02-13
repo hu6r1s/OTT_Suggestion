@@ -2,6 +2,8 @@ package com.three.ott_suggestion.like;
 
 import com.three.ott_suggestion.global.response.CommonResponse;
 import com.three.ott_suggestion.global.util.UserDetailsImpl;
+import com.three.ott_suggestion.post.dto.PostResponseDto;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -32,4 +34,10 @@ public class LikeController {
 
     }
 
+    @GetMapping("/posts/like/top3")
+    public ResponseEntity<CommonResponse<List<PostResponseDto>>> getLikeTopThreePosts() {
+        return ResponseEntity.ok().body(CommonResponse.<List<PostResponseDto>>builder()
+            .data(likeService.getLikeTopThreePosts())
+            .build());
+    }
 }
