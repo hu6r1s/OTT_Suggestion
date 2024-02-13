@@ -13,10 +13,8 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import java.time.LocalDateTime;
-import java.util.Date;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.grammars.hql.HqlParser.LocalDateTimeContext;
 
 @Entity
 @Getter
