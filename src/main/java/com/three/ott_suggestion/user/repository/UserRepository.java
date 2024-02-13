@@ -3,7 +3,6 @@ package com.three.ott_suggestion.user.repository;
 import com.three.ott_suggestion.user.entity.User;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
 
 public interface UserRepository extends JpaRepository<User, Long> {
 
@@ -11,4 +10,5 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     Optional<User> findByEmail(String email);
 
+    User findByNickname(String nickname);
 }

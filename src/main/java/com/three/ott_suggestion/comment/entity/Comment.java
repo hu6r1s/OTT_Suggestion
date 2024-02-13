@@ -13,15 +13,15 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import java.time.LocalDateTime;
-import java.util.Date;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.grammars.hql.HqlParser.LocalDateTimeContext;
+import org.hibernate.annotations.SQLRestriction;
 
 @Entity
 @Getter
 @Table(name = "comments")
 @NoArgsConstructor
+@SQLRestriction("deleted_at is NULL")
 public class Comment extends TimeStamped {
 
     @Id
