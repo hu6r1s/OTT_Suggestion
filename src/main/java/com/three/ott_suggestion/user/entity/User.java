@@ -34,15 +34,27 @@ public class User extends TimeStamped {
     @Column
     private String introduction;
 
-    public User(String email, String password, String nickname, String introduction) {
+    @Column(name = "verification_code", length = 64)
+    private String verificationCode;
+
+    private boolean enabled;
+
+    public User(String email, String password, String nickname, String introduction, String verificationCode, boolean enabled) {
         this.email = email;
         this.password = password;
         this.nickname = nickname;
         this.introduction = introduction;
+        this.verificationCode = verificationCode;
+        this.enabled = enabled;
     }
 
     public void update(UpdateRequestDto requestDto) {
         this.nickname = requestDto.getNickname();
         this.introduction = requestDto.getIntroduction();
+    }
+
+    public void verify(String verificationCode, boolean enabled) {
+        this.verificationCode = verificationCode;
+        this.enabled = enabled;
     }
 }
