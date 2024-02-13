@@ -5,6 +5,7 @@ import com.three.ott_suggestion.global.util.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -24,12 +25,18 @@ public class LikeController {
     }
 
     @PostMapping("/posts/{postId}/like")
-    public ResponseEntity<CommonResponse<Void>> likePost(@PathVariable Long postId,
+    public ResponseEntity<CommonResponse<Void>> createLike(@PathVariable Long postId,
         @AuthenticationPrincipal
         UserDetailsImpl userDetails) {
         return ResponseEntity.ok().body(CommonResponse.<Void>builder()
-            .message(likeService.likePost(postId, userDetails.getUser())).build());
-
+            .message(likeService.createLike(postId, userDetails.getUser())).build());
     }
 
+    @DeleteMapping("/posts/{postId}/like")
+    public ResponseEntity<CommonResponse<Void>> deleteLike(@PathVariable Long postId,
+            @AuthenticationPrincipal
+            UserDetailsImpl userDetails) {
+        return ResponseEntity.ok().body(CommonResponse.<Void>builder()
+                .message(likeService.deleteLike(postId, userDetails.getUser())).build());
+    }
 }
