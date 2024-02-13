@@ -1,7 +1,6 @@
 package com.three.ott_suggestion.post.dto;
 
 import com.three.ott_suggestion.post.entity.Post;
-import com.three.ott_suggestion.user.entity.User;
 import java.time.LocalDateTime;
 import lombok.Getter;
 import lombok.Setter;

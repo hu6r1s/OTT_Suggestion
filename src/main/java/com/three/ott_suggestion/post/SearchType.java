@@ -1,16 +1,16 @@
 package com.three.ott_suggestion.post;
 
-public enum PostType {
+public enum SearchType {
     TITLE("title"),
     NICKNAME("nickname");
 
     private final String type;
 
-    PostType(String type){
+    SearchType(String type) {
         this.type = type;
     }
 
-    public String type(){
+    public String type() {
         return this.type;
     }
 }
