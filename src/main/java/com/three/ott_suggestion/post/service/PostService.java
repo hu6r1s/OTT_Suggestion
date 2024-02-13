@@ -3,7 +3,7 @@ package com.three.ott_suggestion.post.service;
 import com.three.ott_suggestion.global.exception.InvalidInputException;
 import com.three.ott_suggestion.global.exception.InvalidPostException;
 import com.three.ott_suggestion.global.exception.InvalidUserException;
-import com.three.ott_suggestion.post.PostType;
+import com.three.ott_suggestion.post.SearchType;
 import com.three.ott_suggestion.post.dto.PostRequestDto;
 import com.three.ott_suggestion.post.dto.PostResponseDto;
 import com.three.ott_suggestion.post.entity.Post;
@@ -34,7 +34,7 @@ public class PostService {
 
     public List<PostResponseDto> getAllPosts() {
         return postRepository.findAllByDeletedAtIsNull().stream().map(PostResponseDto::new)
-            .toList();
+                .toList();
     }
 
     public PostResponseDto getPost(Long postId) {
@@ -42,16 +42,6 @@ public class PostService {
                 () -> new InvalidInputException("해당 게시글은 삭제 되었습니다.")
         );
         return new PostResponseDto(post);
-    }
-
-
-    public Post findPost(Long postId) {
-        return postRepository.findById(postId).orElseThrow(
-            () -> {
-                String message = "해당 게시글이 없습니다.";
-                return new InvalidPostException(message);
-            }
-        );
     }
 
     @Transactional
@@ -62,27 +52,36 @@ public class PostService {
         return new PostResponseDto(post);
     }
 
-    private void validateUser(Long userId, Post post) {
-        if(userId != post.getUser().getId()){
-            throw new InvalidUserException("해당 게시글의 유저가 아닙니다.");
-        }
-    }
-
     public List<PostResponseDto> searchPost(String type, String keyword) {
-        if(type.equals(PostType.NICKNAME.type())){
+        if (type.equals(SearchType.NICKNAME.type())) {
             User user = userService.findUser(keyword);
-            return postRepository.findByUserId(user.getId()).stream().map(PostResponseDto::new).toList();
-        }
-        else if(type.equals(PostType.TITLE.type())){
+            return postRepository.findByUserId(user.getId()).stream().map(PostResponseDto::new)
+                    .toList();
+        } else if (type.equals(SearchType.TITLE.type())) {
             return postRepository.findByTitle(keyword).stream().map(PostResponseDto::new).toList();
         }
         throw new InvalidInputException("query 입력값이 잘못 되었습니다.");
     }
 
     @Transactional
-    public void deleteComment(User user, Long postId) {
+    public void deletePost(User user, Long postId) {
         Post post = findPost(postId);
         validateUser(user.getId(), post);
         post.softDelete();
+    }
+
+    private void validateUser(Long userId, Post post) {
+        if (userId != post.getUser().getId()) {
+            throw new InvalidUserException("해당 게시글의 유저가 아닙니다.");
+        }
+    }
+
+    public Post findPost(Long postId) {
+        return postRepository.findById(postId).orElseThrow(
+                () -> {
+                    String message = "해당 게시글이 없습니다.";
+                    return new InvalidPostException(message);
+                }
+        );
     }
 }

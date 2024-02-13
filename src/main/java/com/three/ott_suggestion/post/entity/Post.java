@@ -15,11 +15,13 @@ import jakarta.persistence.Table;
 import java.time.LocalDateTime;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.SQLRestriction;
 
 @Getter
 @Table(name = "posts")
 @Entity
 @NoArgsConstructor
+@SQLRestriction("deleted_at is NULL")
 public class Post extends TimeStamped {
 
     @Id
