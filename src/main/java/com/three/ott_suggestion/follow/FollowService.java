@@ -1,5 +1,6 @@
 package com.three.ott_suggestion.follow;
 
+import com.three.ott_suggestion.global.exception.InvalidInputException;
 import com.three.ott_suggestion.user.entity.User;
 import com.three.ott_suggestion.user.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -21,5 +22,15 @@ public class FollowService {
             .toUserId(toUserId)
             .build();
         followRepository.save(follow);
+    }
+
+    @Transactional
+    public void deleteFollow(User fromUser, Long toUserId) {
+        userService.findUser(toUserId);
+        Follow follow = followRepository.findByFromUserIdAndToUserId(fromUser.getId(), toUserId)
+            .orElseThrow(
+                () -> new InvalidInputException("해당 팔로우를 찾을 수 없습니다.")
+            );
+        followRepository.delete(follow);
     }
 }
