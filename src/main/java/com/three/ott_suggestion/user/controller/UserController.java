@@ -7,6 +7,7 @@ import com.three.ott_suggestion.user.dto.UpdateRequestDto;
 import com.three.ott_suggestion.user.dto.UserResponseDto;
 import com.three.ott_suggestion.user.service.UserService;
 import jakarta.validation.Valid;
+import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -32,7 +33,7 @@ public class UserController {
 
     @GetMapping
     public ResponseEntity<CommonResponse<UserResponseDto>> getUserInfo(
-        @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        @AuthenticationPrincipal UserDetailsImpl userDetails) throws MalformedURLException {
 
         return ResponseEntity.status(HttpStatus.OK.value()).body(
             CommonResponse.<UserResponseDto>builder()

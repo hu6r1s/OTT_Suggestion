@@ -2,8 +2,11 @@ package com.three.ott_suggestion.user.dto;
 
 import com.three.ott_suggestion.user.entity.User;
 import lombok.Getter;
+import lombok.Setter;
+import org.springframework.core.io.UrlResource;
 
 @Getter
+@Setter
 public class UserResponseDto {
 
     private Long id;
@@ -14,10 +17,13 @@ public class UserResponseDto {
 
     private String introduction;
 
-    public  UserResponseDto(User user) {
+    private UrlResource imgUrl;
+
+    public  UserResponseDto(User user, UrlResource resource) {
         this.id = user.getId();
         this.email = user.getEmail();
         this.nickname = user.getNickname();
         this.introduction = user.getIntroduction();
+        this.imgUrl = resource;
     }
 }

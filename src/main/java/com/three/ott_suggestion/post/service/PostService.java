@@ -3,8 +3,9 @@ package com.three.ott_suggestion.post.service;
 import com.three.ott_suggestion.global.exception.InvalidInputException;
 import com.three.ott_suggestion.global.exception.InvalidPostException;
 import com.three.ott_suggestion.global.exception.InvalidUserException;
-import com.three.ott_suggestion.image.Image;
-import com.three.ott_suggestion.image.ImageService;
+import com.three.ott_suggestion.image.service.ImageService;
+import com.three.ott_suggestion.image.service.PostImageService;
+import com.three.ott_suggestion.image.PostImage;
 import com.three.ott_suggestion.post.SearchType;
 import com.three.ott_suggestion.post.dto.PostRequestDto;
 import com.three.ott_suggestion.post.dto.PostResponseDto;
@@ -28,14 +29,14 @@ public class PostService {
 
     private final PostRepository postRepository;
     private final UserService userService;
-    private final ImageService imageService;
+    private final ImageService<PostImage> postImageService;
 
     @Transactional
     public void createPost(String title, String contents, User user, MultipartFile file)
             throws Exception {
         log.info(user.getEmail());
         Post post = new Post(title, contents, user);
-        Image image = imageService.createImage(file);
+        PostImage image = postImageService.createImage(file);
         post.createImage(image);
         postRepository.save(post);
     }
@@ -49,7 +50,7 @@ public class PostService {
         Post post = postRepository.findPostByIdAndDeletedAtIsNull(postId).orElseThrow(
                 () -> new InvalidInputException("해당 게시글은 삭제 되었습니다.")
         );
-        imageService.getFile(postId);
+        postImageService.getImage(postId);
         return new PostResponseDto(post);
     }
 
