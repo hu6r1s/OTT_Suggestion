@@ -1,5 +1,7 @@
-package com.three.ott_suggestion.image;
+package com.three.ott_suggestion.image.service;
 
+import com.three.ott_suggestion.image.repository.PostImageRepository;
+import com.three.ott_suggestion.image.PostImage;
 import java.io.File;
 import java.net.MalformedURLException;
 import java.util.UUID;
@@ -12,27 +14,28 @@ import org.springframework.web.multipart.MultipartFile;
 
 @Service
 @RequiredArgsConstructor
-public class ImageService {
+public class PostImageService implements ImageService<PostImage> {
 
     @Value("${upload.path}")
     private String uploadPath;
 
-    private final ImageRepository imageRepository;
+    private final PostImageRepository postImageRepository;
 
+    @Override
     @Transactional
-    public Image createImage(MultipartFile file) throws Exception {
+    public PostImage createImage(MultipartFile file) throws Exception {
         String originalFilename = file.getOriginalFilename();
         String saveFileName = createSaveFileName(originalFilename);
         file.transferTo(new File(getFullPath(saveFileName)));
 
         String contentType = file.getContentType();
 
-        Image image = Image.builder()
+        PostImage image = PostImage.builder()
                 .fileName(originalFilename)
                 .saveFileName(saveFileName)
                 .contentType(contentType)
                 .build();
-        imageRepository.save(image);
+        postImageRepository.save(image);
         return image;
     }
 
@@ -51,8 +54,9 @@ public class ImageService {
         return uploadPath + filename;
     }
 
-    public UrlResource getFile(Long id) throws MalformedURLException {
-        Image image = imageRepository.findById(id).orElseThrow();
+    @Override
+    public UrlResource getImage(Long id) throws MalformedURLException {
+        PostImage image = postImageRepository.findById(id).orElseThrow();
         String fileName = image.getSaveFileName();
         return new UrlResource("file:" + uploadPath + fileName);
     }
