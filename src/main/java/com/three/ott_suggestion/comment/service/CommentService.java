@@ -9,6 +9,7 @@ import com.three.ott_suggestion.global.exception.InvalidInputException;
 import com.three.ott_suggestion.post.entity.Post;
 import com.three.ott_suggestion.post.repository.PostRepository;
 import com.three.ott_suggestion.user.entity.User;
+import java.util.List;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -29,17 +30,26 @@ public class CommentService {
         commentRepository.save(comment);
     }
 
+    public List<CommentResponseDto> getComments(Long postId) {
+        findPost(postId);
+        List<Comment> comments = commentRepository.findAllByPostId(postId);
+        return comments.stream()
+            .filter(comment -> comment.getDeletedAt() == null)
+            .map(CommentResponseDto::new)
+            .toList();
+    }
+
     @Transactional
     public void updateComment(User user,
         Long postId,
         Long commentId,
         CommentRequestDto requestDto) {
-         findPost(postId);
-         Comment comment = findComment(commentId);
+        findPost(postId);
+        Comment comment = findComment(commentId);
 
-         validate(comment.getUser().getId(), user.getId());
+        validate(comment.getUser().getId(), user.getId());
 
-         comment.update(requestDto);
+        comment.update(requestDto);
     }
 
     @Transactional
