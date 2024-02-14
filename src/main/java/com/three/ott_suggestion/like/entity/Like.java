@@ -1,4 +1,4 @@
-package com.three.ott_suggestion.like;
+package com.three.ott_suggestion.like.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

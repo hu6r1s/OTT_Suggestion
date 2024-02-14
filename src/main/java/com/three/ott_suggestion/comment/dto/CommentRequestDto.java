@@ -9,9 +9,4 @@ import lombok.NoArgsConstructor;
 public class CommentRequestDto {
 
     private String content;
-
-    @Builder
-    public CommentRequestDto(String content) {
-        this.content = content;
-    }
 }

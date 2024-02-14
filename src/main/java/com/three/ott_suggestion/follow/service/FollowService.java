@@ -1,10 +1,11 @@
-package com.three.ott_suggestion.follow;
+package com.three.ott_suggestion.follow.service;
 
+import com.three.ott_suggestion.follow.entity.Follow;
+import com.three.ott_suggestion.follow.repository.FollowRepository;
 import com.three.ott_suggestion.global.exception.InvalidInputException;
 import com.three.ott_suggestion.post.dto.PostResponseDto;
 import com.three.ott_suggestion.post.entity.Post;
 import com.three.ott_suggestion.post.repository.PostRepository;
-import com.three.ott_suggestion.post.service.PostService;
 import com.three.ott_suggestion.user.entity.User;
 import com.three.ott_suggestion.user.service.UserService;
 import java.util.ArrayList;

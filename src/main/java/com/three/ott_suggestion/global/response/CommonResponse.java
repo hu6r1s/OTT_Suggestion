@@ -8,6 +8,7 @@ import lombok.Getter;
 @Builder
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class CommonResponse<T> {
+
     private String message;
     private T data;
 }

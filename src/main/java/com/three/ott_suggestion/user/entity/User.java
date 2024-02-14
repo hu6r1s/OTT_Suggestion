@@ -61,10 +61,6 @@ public class User extends TimeStamped {
         this.introduction = requestDto.getIntroduction();
     }
 
-    public void updateImage(UserImage userImage) {
-        this.userImage = userImage;
-    }
-
     public void verify(String verificationCode, boolean enabled) {
         this.verificationCode = verificationCode;
         this.enabled = enabled;

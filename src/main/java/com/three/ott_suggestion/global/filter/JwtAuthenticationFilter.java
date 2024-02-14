@@ -20,6 +20,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 @Slf4j(topic = "로그인 및 JWT 생성")
 public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
+
     private final JwtUtil jwtUtil;
     ObjectMapper objectMapper = new ObjectMapper();
     private final RefreshTokenRepository refreshTokenRepository;
@@ -30,12 +31,12 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         setFilterProcessesUrl("/auth/login");
     }
 
-
-
     @Override
-    public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
+    public Authentication attemptAuthentication(HttpServletRequest request,
+        HttpServletResponse response) throws AuthenticationException {
         try {
-            LoginRequestDto requestDto = new ObjectMapper().readValue(request.getInputStream(), LoginRequestDto.class);
+            LoginRequestDto requestDto = new ObjectMapper().readValue(request.getInputStream(),
+                LoginRequestDto.class);
 
             return getAuthenticationManager().authenticate(
                 new UsernamePasswordAuthenticationToken(
@@ -51,7 +52,8 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     }
 
     @Override
-    protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult)
+    protected void successfulAuthentication(HttpServletRequest request,
+        HttpServletResponse response, FilterChain chain, Authentication authResult)
         throws IOException {
         User user = ((UserDetailsImpl) authResult.getPrincipal()).getUser();
 
@@ -62,7 +64,8 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
         response.setStatus(HttpServletResponse.SC_OK);
 
-        String jsonResponse = objectMapper.writeValueAsString(CommonResponse.<Void>builder().message("로그인에 성공하였습니다.").build());
+        String jsonResponse = objectMapper.writeValueAsString(
+            CommonResponse.<Void>builder().message("로그인에 성공하였습니다.").build());
 
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
@@ -70,15 +73,16 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     }
 
     @Override
-    protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed)
+    protected void unsuccessfulAuthentication(HttpServletRequest request,
+        HttpServletResponse response, AuthenticationException failed)
         throws IOException {
         response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 
-        String jsonResponse = objectMapper.writeValueAsString(CommonResponse.<Void>builder().message("로그인에 실패하였습니다.").build());
+        String jsonResponse = objectMapper.writeValueAsString(
+            CommonResponse.<Void>builder().message("로그인에 실패하였습니다.").build());
 
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
         response.getWriter().write(jsonResponse);
     }
-
 }

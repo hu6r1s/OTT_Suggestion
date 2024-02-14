@@ -1,11 +1,12 @@
-package com.three.ott_suggestion.follow;
+package com.three.ott_suggestion.follow.controller;
 
+import com.three.ott_suggestion.follow.service.FollowService;
 import com.three.ott_suggestion.global.response.CommonResponse;
 import com.three.ott_suggestion.global.util.UserDetailsImpl;
 import com.three.ott_suggestion.post.dto.PostResponseDto;
-import java.util.List;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -43,6 +44,7 @@ public class FollowController {
             CommonResponse.<Void>builder().message("팔로우가 취소되었습니다.").build());
     }
 
+    @Operation(summary = "팔로우 유저 게시글 조회", description = "팔로우한 유저의 게시글을 전체 조회할 수 있는 API")
     @GetMapping("/follows/posts")
     public ResponseEntity<CommonResponse<List<PostResponseDto>>> getAllFollowingPost(
         @AuthenticationPrincipal UserDetailsImpl userDetails) {

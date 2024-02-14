@@ -1,4 +1,4 @@
-package com.three.ott_suggestion.post;
+package com.three.ott_suggestion.post.entity;
 
 public enum SearchType {
     TITLE("title"),

@@ -1,6 +1,5 @@
-package com.three.ott_suggestion.follow;
+package com.three.ott_suggestion.follow.entity;
 
-import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;

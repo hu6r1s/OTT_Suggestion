@@ -1,6 +1,8 @@
-package com.three.ott_suggestion.like;
+package com.three.ott_suggestion.like.service;
 
 import com.three.ott_suggestion.global.exception.InvalidInputException;
+import com.three.ott_suggestion.like.entity.Like;
+import com.three.ott_suggestion.like.repository.LikeRepository;
 import com.three.ott_suggestion.post.dto.PostResponseDto;
 import com.three.ott_suggestion.post.service.PostService;
 import com.three.ott_suggestion.user.entity.User;
@@ -26,7 +28,7 @@ public class LikeService {
     @Transactional
     public String createLike(Long postId, User user) {
         postService.findPost(postId);
-        if (!likeRepository.findByUserIdAndPostId(user.getId(), postId).isEmpty()) {
+        if (likeRepository.findByUserIdAndPostId(user.getId(), postId).isPresent()) {
             throw new InvalidInputException("이미 좋아요를 눌렀습니다.");
         }
         Like like = new Like(postId, user.getId());
@@ -38,7 +40,7 @@ public class LikeService {
     public String deleteLike(Long postId, User user) {
         postService.findPost(postId);
         Like like = likeRepository.findByUserIdAndPostId(user.getId(), postId).orElseThrow(
-                () -> new InvalidInputException("이미 좋아요 취소를 했습니다.")
+            () -> new InvalidInputException("이미 좋아요 취소를 했습니다.")
         );
         likeRepository.delete(like);
         return "좋아요 취소";
@@ -50,7 +52,7 @@ public class LikeService {
 
         for (Like like : topThreeLikes) {
             PostResponseDto postResponseDto = new PostResponseDto(
-                    postService.findPost(like.getPostId()));
+                postService.findPost(like.getPostId()));
             result.add(postResponseDto);
         }
         return result;
