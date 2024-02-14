@@ -17,22 +17,21 @@ import org.springframework.web.multipart.MultipartFile;
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
-public class PostImageServiceImpl implements ImageService<PostImage> {
+public class PostImageService {
 
     @Value("${upload.path}")
     private String uploadPath;
 
     private final PostImageRepository postImageRepository;
 
-    @Override
+
     @Transactional
-    public PostImage createImage(MultipartFile file) throws Exception {
-        PostImage image = getPostImage(file);
+    public void createImage(MultipartFile imageFile, Post post) throws Exception {
+        PostImage image = getPostImage(imageFile, post);
         postImageRepository.save(image);
-        return image;
     }
 
-    @Override
+
     public String getImage(Long id) throws MalformedURLException {
         PostImage image = postImageRepository.findById(id)
             .orElseThrow(() -> new InvalidInputException("게시물 이미지가 존재하지 않습니다"));
@@ -40,29 +39,38 @@ public class PostImageServiceImpl implements ImageService<PostImage> {
     }
 
     @Transactional
-    @Override
     public void updateImage(Post post, MultipartFile imageFile) throws IOException {
-        PostImage image = getPostImage(imageFile);
-        PostImage postImage = postImageRepository.findById(post.getPostImage().getId())
+        PostImage image = getPostImage(imageFile, post);
+        PostImage postImage = postImageRepository.findByPostId(post.getId())
             .orElseThrow(() -> new InvalidInputException("게시물 이미지가 존재하지 않습니다"));
         postImage.updatePostImage(image);
     }
 
-    private PostImage getPostImage(MultipartFile file) throws IOException {
-        String originalFilename = file.getOriginalFilename();
-        String saveFileName = createSaveFileName(originalFilename);
-        file.transferTo(new File(getFullPath(saveFileName)));
-        String filePath = uploadPath + saveFileName;
+    private PostImage getPostImage(MultipartFile file, Post post) throws IOException {
+        if (file != null) {
+            String originalFilename = file.getOriginalFilename();
+            String saveFileName = createSaveFileName(originalFilename);
+            file.transferTo(new File(getFullPath(saveFileName)));
+            String filePath = uploadPath + saveFileName;
 
-        String contentType = file.getContentType();
+            String contentType = file.getContentType();
 
-        PostImage image = PostImage.builder()
-            .fileName(originalFilename)
-            .saveFileName(saveFileName)
-            .contentType(contentType)
-            .filePath(filePath)
+            PostImage image = PostImage.builder()
+                .fileName(originalFilename)
+                .saveFileName(saveFileName)
+                .contentType(contentType)
+                .filePath(filePath)
+                .post(post)
+                .build();
+            return image;
+        }
+        return PostImage.builder()
+            .fileName(null)
+            .saveFileName(null)
+            .contentType(null)
+            .filePath(null)
+            .post(post)
             .build();
-        return image;
     }
 
     private String createSaveFileName(String originalFilename) {
@@ -79,6 +87,5 @@ public class PostImageServiceImpl implements ImageService<PostImage> {
     private String getFullPath(String filename) {
         return uploadPath + filename;
     }
-
 
 }

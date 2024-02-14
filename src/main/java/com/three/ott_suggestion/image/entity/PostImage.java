@@ -1,10 +1,13 @@
 package com.three.ott_suggestion.image.entity;
 
+import com.three.ott_suggestion.post.entity.Post;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -30,6 +33,10 @@ public class PostImage {
     private String contentType;
     @Column(name = "file_path")
     private String filePath;
+
+    @ManyToOne
+    @JoinColumn(name = "post_id", nullable = false)
+    public Post post;
 
     public void updatePostImage(PostImage image) {
         this.fileName = image.getFileName();

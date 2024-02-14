@@ -53,19 +53,21 @@ public class AuthService {
         }
         String fileName = "default.jpg";
         String filePath = localPath + fileName;
+        User user = new User(email, password, nickname, introduction, randomCode, false);
         UserImage image = UserImage.builder()
             .fileName(fileName)
             .saveFileName("default")
             .contentType("image/png")
             .filePath(filePath)
+            .user(user)
             .build();
-        userImageRepository.save(image);
-        User user = new User(email, password, nickname, introduction, image, randomCode, false);
         userRepository.save(user);
+        userImageRepository.save(image);
 
         sendVerificationEmail(user, siteURL);
     }
 
+    @Transactional
     public boolean verify(String verificationCode) {
         User user = userRepository.findByVerificationCode(verificationCode);
 

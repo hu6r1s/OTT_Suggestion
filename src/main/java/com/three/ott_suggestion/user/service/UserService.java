@@ -2,8 +2,7 @@ package com.three.ott_suggestion.user.service;
 
 import com.three.ott_suggestion.global.exception.InvalidInputException;
 import com.three.ott_suggestion.global.util.UserDetailsImpl;
-import com.three.ott_suggestion.image.entity.UserImage;
-import com.three.ott_suggestion.image.service.ImageService;
+import com.three.ott_suggestion.image.service.UserImageService;
 import com.three.ott_suggestion.user.dto.UpdateRequestDto;
 import com.three.ott_suggestion.user.dto.UserResponseDto;
 import com.three.ott_suggestion.user.entity.User;
@@ -21,10 +20,10 @@ import org.springframework.web.multipart.MultipartFile;
 public class UserService {
 
     private final UserRepository userRepository;
-    private final ImageService<UserImage> userImageService;
+    private final UserImageService userImageService;
 
     public UserResponseDto getUserInfo(UserDetailsImpl userDetails) throws MalformedURLException {
-        String resource = userImageService.getImage(userDetails.getUser().getUserImage().getId());
+        String resource = userImageService.getImage(userDetails.getUser().getId());
         return new UserResponseDto(userDetails.getUser(), resource);
     }
 
@@ -35,9 +34,7 @@ public class UserService {
         User user = userRepository.findByEmail(userDetails.getUsername()).orElseThrow(() ->
             new IllegalArgumentException("User가 존재하지 않습니다.")
         );
-        if (!imageFile.getOriginalFilename().isEmpty()) {
-            userImageService.updateImage(user, imageFile);
-        }
+        userImageService.updateImage(user, imageFile);
         user.update(requestDto);
     }
 
