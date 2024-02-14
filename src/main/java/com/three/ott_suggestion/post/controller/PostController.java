@@ -5,6 +5,7 @@ import com.three.ott_suggestion.global.util.UserDetailsImpl;
 import com.three.ott_suggestion.post.dto.PostRequestDto;
 import com.three.ott_suggestion.post.dto.PostResponseDto;
 import com.three.ott_suggestion.post.service.PostService;
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -31,12 +33,11 @@ public class PostController {
 
     @PostMapping("/posts")
     public ResponseEntity<CommonResponse<Void>> createPost(
-            @RequestParam String title,
-            @RequestParam String contents,
-            @RequestParam MultipartFile file,
+            @RequestPart PostRequestDto requestDto,
+            @RequestPart MultipartFile image,
             @AuthenticationPrincipal
             UserDetailsImpl userDetails) throws Exception {
-        postService.createPost(title, contents, userDetails.getUser(), file);
+        postService.createPost(requestDto, userDetails.getUser(), image);
         return ResponseEntity.status(HttpStatus.CREATED.value()).body(
                 CommonResponse.<Void>builder().message("게시물 생성 완료").build()
         );
@@ -70,10 +71,10 @@ public class PostController {
     public ResponseEntity<CommonResponse<PostResponseDto>> updatePost(
             @AuthenticationPrincipal UserDetailsImpl userDetails,
             @PathVariable Long postId,
-            @RequestBody PostRequestDto requestDto
-    ) {
-        PostResponseDto responseDto = postService.updatePost(userDetails.getUser().getId(), postId,
-                requestDto);
+            @RequestPart PostRequestDto requestDto,
+            @RequestPart(required = false) MultipartFile image
+    ) throws IOException {
+        PostResponseDto responseDto = postService.updatePost(userDetails.getUser().getId(), postId, requestDto, image);
         return ResponseEntity.status(HttpStatus.OK.value()).body(
                 CommonResponse.<PostResponseDto>builder().message("특정 게시물 수정 완료").data(responseDto)
                         .build()

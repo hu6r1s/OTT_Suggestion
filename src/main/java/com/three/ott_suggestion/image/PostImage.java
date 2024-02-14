@@ -24,4 +24,10 @@ public class PostImage {
     private String fileName;
     private String saveFileName;
     private String contentType;
+
+    public void updatePostImage(PostImage image) {
+        this.fileName = image.getFileName();
+        this.saveFileName = image.getSaveFileName();
+        this.contentType = image.getContentType();
+    }
 }

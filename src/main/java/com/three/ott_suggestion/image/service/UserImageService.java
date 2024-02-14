@@ -4,10 +4,10 @@ package com.three.ott_suggestion.image.service;
 import com.three.ott_suggestion.global.exception.InvalidInputException;
 import com.three.ott_suggestion.image.UserImage;
 import com.three.ott_suggestion.image.repository.UserImageRepository;
+import com.three.ott_suggestion.post.entity.Post;
 import com.three.ott_suggestion.user.entity.User;
 import java.io.File;
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -36,11 +36,23 @@ public class UserImageService implements ImageService<UserImage> {
         userImageRepository.save(image);
         return image;
     }
+
     @Override
+    public String getImage(Long id) {
+        UserImage image = userImageRepository.findById(id).orElseThrow(() -> new InvalidInputException("프로필 이미지가 존재하지 않습니다."));
+        if (image.getSaveFileName().equals("default")) {
+            return localPath + image.getFileName();
+        }
+        return uploadPath + image.getSaveFileName();
+    }
+
+
     @Transactional
+    @Override
     public void updateImage(User user, MultipartFile imageFile) throws IOException {
         UserImage image = getUserImage(imageFile);
-        UserImage userImage = userImageRepository.findById(user.getUserImage().getId()).orElseThrow(()-> new InvalidInputException("프로필 이미지가 존재하지 않습니다."));
+        UserImage userImage = userImageRepository.findById(user.getUserImage().getId())
+                .orElseThrow(() -> new InvalidInputException("프로필 이미지가 존재하지 않습니다."));
         userImage.updateUserImage(image);
     }
 
@@ -58,17 +70,6 @@ public class UserImageService implements ImageService<UserImage> {
                 .build();
         return image;
     }
-
-    @Override
-    public String getImage(Long id){
-        UserImage image = userImageRepository.findById(id).orElseThrow();
-        if (image.getSaveFileName().equals("default")) {
-            return localPath + image.getFileName();
-        }
-        return uploadPath + image.getSaveFileName();
-    }
-
-
 
 
     private String createSaveFileName(String originalFilename) {

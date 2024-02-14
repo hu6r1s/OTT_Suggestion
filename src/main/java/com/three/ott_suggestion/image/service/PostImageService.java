@@ -1,13 +1,16 @@
 package com.three.ott_suggestion.image.service;
 
+import com.three.ott_suggestion.global.exception.InvalidInputException;
 import com.three.ott_suggestion.image.repository.PostImageRepository;
 import com.three.ott_suggestion.image.PostImage;
+import com.three.ott_suggestion.post.entity.Post;
+import com.three.ott_suggestion.user.entity.User;
 import java.io.File;
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -24,6 +27,27 @@ public class PostImageService implements ImageService<PostImage> {
     @Override
     @Transactional
     public PostImage createImage(MultipartFile file) throws Exception {
+        PostImage image = getPostImage(file);
+        postImageRepository.save(image);
+        return image;
+    }
+
+    @Override
+    public String getImage(Long id) throws MalformedURLException {
+        PostImage image = postImageRepository.findById(id).orElseThrow(() -> new InvalidInputException("게시물 이미지가 존재하지 않습니다"));
+        String fileName = image.getSaveFileName();
+        return uploadPath + fileName;
+    }
+
+    @Transactional
+    @Override
+    public void updateImage(Post post, MultipartFile imageFile) throws IOException {
+        PostImage image = getPostImage(imageFile);
+        PostImage postImage = postImageRepository.findById(post.getPostImage().getId()).orElseThrow(() -> new InvalidInputException("게시물 이미지가 존재하지 않습니다"));
+        postImage.updatePostImage(image);
+    }
+
+    private PostImage getPostImage(MultipartFile file) throws IOException {
         String originalFilename = file.getOriginalFilename();
         String saveFileName = createSaveFileName(originalFilename);
         file.transferTo(new File(getFullPath(saveFileName)));
@@ -35,7 +59,6 @@ public class PostImageService implements ImageService<PostImage> {
                 .saveFileName(saveFileName)
                 .contentType(contentType)
                 .build();
-        postImageRepository.save(image);
         return image;
     }
 
@@ -54,10 +77,5 @@ public class PostImageService implements ImageService<PostImage> {
         return uploadPath + filename;
     }
 
-    @Override
-    public UrlResource getImage(Long id) throws MalformedURLException {
-        PostImage image = postImageRepository.findById(id).orElseThrow();
-        String fileName = image.getSaveFileName();
-        return new UrlResource("file:" + uploadPath + fileName);
-    }
+
 }

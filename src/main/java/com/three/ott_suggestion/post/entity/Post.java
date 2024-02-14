@@ -45,9 +45,9 @@ public class Post extends TimeStamped {
     @JoinColumn(name = "user_id", nullable = false)
     public User user;
 
-    public Post(String title, String contents, User user) {
-        this.title = title;
-        this.content = contents;
+    public Post(PostRequestDto requestDto, User user) {
+        this.title = requestDto.getTitle();
+        this.content = requestDto.getContents();
         this.user = user;
     }
 
