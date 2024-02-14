@@ -1,11 +1,14 @@
 package com.three.ott_suggestion.like.service;
 
 import com.three.ott_suggestion.global.exception.InvalidInputException;
+import com.three.ott_suggestion.image.service.PostImageService;
 import com.three.ott_suggestion.like.entity.Like;
 import com.three.ott_suggestion.like.repository.LikeRepository;
 import com.three.ott_suggestion.post.dto.PostResponseDto;
+import com.three.ott_suggestion.post.entity.Post;
 import com.three.ott_suggestion.post.service.PostService;
 import com.three.ott_suggestion.user.entity.User;
+import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +22,7 @@ public class LikeService {
 
     private final LikeRepository likeRepository;
     private final PostService postService;
+    private final PostImageService postImageService;
 
     public Long countLikes(Long postId) {
         postService.findPost(postId);
@@ -46,13 +50,14 @@ public class LikeService {
         return "좋아요 취소";
     }
 
-    public List<PostResponseDto> getLikeTopThreePosts() {
+    public List<PostResponseDto> getLikeTopThreePosts() throws MalformedURLException {
         List<Like> topThreeLikes = highCountSorted();
         List<PostResponseDto> result = new ArrayList<>();
 
         for (Like like : topThreeLikes) {
-            PostResponseDto postResponseDto = new PostResponseDto(
-                postService.findPost(like.getPostId()));
+            Post post = postService.findPost(like.getPostId());
+            PostResponseDto postResponseDto = new PostResponseDto(post
+                , postImageService.getImage(post.getId()));
             result.add(postResponseDto);
         }
         return result;

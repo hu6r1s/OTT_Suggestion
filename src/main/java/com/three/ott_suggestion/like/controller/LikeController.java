@@ -6,6 +6,7 @@ import com.three.ott_suggestion.like.service.LikeService;
 import com.three.ott_suggestion.post.dto.PostResponseDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import java.net.MalformedURLException;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -51,7 +52,8 @@ public class LikeController {
 
     @Operation(summary = "좋아요 랭킹 조회", description = "좋아요가 높은 3개의 게시글 조회할 수 있는 API")
     @GetMapping("/posts/like/top3")
-    public ResponseEntity<CommonResponse<List<PostResponseDto>>> getLikeTopThreePosts() {
+    public ResponseEntity<CommonResponse<List<PostResponseDto>>> getLikeTopThreePosts()
+        throws MalformedURLException {
         return ResponseEntity.ok().body(CommonResponse.<List<PostResponseDto>>builder()
             .data(likeService.getLikeTopThreePosts())
             .build());
