@@ -1,4 +1,4 @@
-package com.three.ott_suggestion.like;
+package com.three.ott_suggestion.like.dto;
 
 import lombok.Getter;
 import lombok.Setter;

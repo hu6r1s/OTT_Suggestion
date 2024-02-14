@@ -3,7 +3,6 @@ package com.three.ott_suggestion.post.dto;
 import com.three.ott_suggestion.post.entity.Post;
 import java.time.LocalDateTime;
 import lombok.Getter;
-import lombok.Setter;
 
 @Getter
 public class PostResponseDto {

@@ -1,7 +1,8 @@
-package com.three.ott_suggestion.like;
+package com.three.ott_suggestion.like.controller;
 
 import com.three.ott_suggestion.global.response.CommonResponse;
 import com.three.ott_suggestion.global.util.UserDetailsImpl;
+import com.three.ott_suggestion.like.service.LikeService;
 import com.three.ott_suggestion.post.dto.PostResponseDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -27,30 +28,32 @@ public class LikeController {
     @GetMapping("/posts/{postId}/like")
     public ResponseEntity<CommonResponse<Long>> countLikes(@PathVariable Long postId) {
         return ResponseEntity.ok().body(CommonResponse.<Long>builder()
-                .data(likeService.countLikes(postId)).build());
+            .data(likeService.countLikes(postId)).build());
     }
 
-    @Operation(summary = "좋아요 선택/취소", description = "좋아요 선택/취소할 수 있는 API")
+    @Operation(summary = "좋아요 선택", description = "좋아요 선택할 수 있는 API")
     @PostMapping("/posts/{postId}/like")
     public ResponseEntity<CommonResponse<Void>> createLike(@PathVariable Long postId,
-            @AuthenticationPrincipal
-            UserDetailsImpl userDetails) {
+        @AuthenticationPrincipal
+        UserDetailsImpl userDetails) {
         return ResponseEntity.ok().body(CommonResponse.<Void>builder()
-                .message(likeService.createLike(postId, userDetails.getUser())).build());
+            .message(likeService.createLike(postId, userDetails.getUser())).build());
     }
 
+    @Operation(summary = "좋아요 취소", description = "좋아요 취소할 수 있는 API")
     @DeleteMapping("/posts/{postId}/like")
     public ResponseEntity<CommonResponse<Void>> deleteLike(@PathVariable Long postId,
-            @AuthenticationPrincipal
-            UserDetailsImpl userDetails) {
+        @AuthenticationPrincipal
+        UserDetailsImpl userDetails) {
         return ResponseEntity.ok().body(CommonResponse.<Void>builder()
-                .message(likeService.deleteLike(postId, userDetails.getUser())).build());
+            .message(likeService.deleteLike(postId, userDetails.getUser())).build());
     }
 
+    @Operation(summary = "좋아요 랭킹 조회", description = "좋아요가 높은 3개의 게시글 조회할 수 있는 API")
     @GetMapping("/posts/like/top3")
     public ResponseEntity<CommonResponse<List<PostResponseDto>>> getLikeTopThreePosts() {
         return ResponseEntity.ok().body(CommonResponse.<List<PostResponseDto>>builder()
-                .data(likeService.getLikeTopThreePosts())
-                .build());
+            .data(likeService.getLikeTopThreePosts())
+            .build());
     }
 }

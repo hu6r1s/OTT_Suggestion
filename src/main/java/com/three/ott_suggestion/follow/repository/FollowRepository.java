@@ -1,5 +1,6 @@
-package com.three.ott_suggestion.follow;
+package com.three.ott_suggestion.follow.repository;
 
+import com.three.ott_suggestion.follow.entity.Follow;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;

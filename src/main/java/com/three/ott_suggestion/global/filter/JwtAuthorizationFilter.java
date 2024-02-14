@@ -12,8 +12,8 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
@@ -21,8 +21,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
-
-import java.io.IOException;
 
 @Slf4j(topic = "JWT 검증 및 인가")
 public class JwtAuthorizationFilter extends OncePerRequestFilter {
@@ -33,14 +31,16 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
     ObjectMapper objectMapper = new ObjectMapper();
 
-    public JwtAuthorizationFilter(JwtUtil jwtUtil, UserDetailsServiceImpl userDetailsService, RefreshTokenRepository refreshTokenRepository) {
+    public JwtAuthorizationFilter(JwtUtil jwtUtil, UserDetailsServiceImpl userDetailsService,
+        RefreshTokenRepository refreshTokenRepository) {
         this.jwtUtil = jwtUtil;
         this.userDetailsService = userDetailsService;
         this.refreshTokenRepository = refreshTokenRepository;
     }
 
     @Override
-    protected void doFilterInternal(HttpServletRequest req, HttpServletResponse res, FilterChain filterChain) throws ServletException, IOException {
+    protected void doFilterInternal(HttpServletRequest req, HttpServletResponse res,
+        FilterChain filterChain) throws ServletException, IOException {
 
         String tokenValue = jwtUtil.getJwtFromHeader(req);
 
@@ -52,14 +52,18 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
                     Claims info = jwtUtil.getUserInfoFromExpriedToken(tokenValue);
                     UserDetailsImpl userDetails = (UserDetailsImpl) userDetailsService.loadUserByUsername(
                         info.getSubject());
-                    RefreshToken refreshToken = refreshTokenRepository.findByUserId(userDetails.getUser().getId());
-                    if (refreshToken != null && jwtUtil.validateToken(refreshToken.getRefreshToken()) == 0) {
+                    RefreshToken refreshToken = refreshTokenRepository.findByUserId(
+                        userDetails.getUser().getId());
+                    if (refreshToken != null
+                        && jwtUtil.validateToken(refreshToken.getRefreshToken()) == 0) {
                         String newAccessToken = jwtUtil.createAccessToken(info.getSubject());
                         res.addHeader(jwtUtil.AUTHORIZATION_HEADER, newAccessToken);
 
                         res.setStatus(HttpServletResponse.SC_OK);
 
-                        String jsonResponse = objectMapper.writeValueAsString(CommonResponse.<Void>builder().message("새로운 Acces Token이 발급되었습니다.").build());
+                        String jsonResponse = objectMapper.writeValueAsString(
+                            CommonResponse.<Void>builder().message("새로운 Acces Token이 발급되었습니다.")
+                                .build());
 
                         res.setContentType("application/json");
                         res.setCharacterEncoding("UTF-8");
@@ -68,7 +72,9 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
                     } else {
                         res.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 
-                        String jsonResponse = objectMapper.writeValueAsString(CommonResponse.<Void>builder().message("Access Token과 Refresh Token이 모두 만료되었습니다.").build());
+                        String jsonResponse = objectMapper.writeValueAsString(
+                            CommonResponse.<Void>builder()
+                                .message("Access Token과 Refresh Token이 모두 만료되었습니다.").build());
                         refreshTokenRepository.delete(refreshToken);
 
                         res.setContentType("application/json");
@@ -80,8 +86,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
                     log.error(e.getMessage());
                     return;
                 }
-            }
-            else if (tokenStatus == 2) {
+            } else if (tokenStatus == 2) {
                 log.error("Token Error");
                 return;
             }

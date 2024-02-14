@@ -2,8 +2,6 @@ package com.three.ott_suggestion.user.dto;
 
 import com.three.ott_suggestion.user.entity.User;
 import lombok.Getter;
-import lombok.Setter;
-import org.springframework.core.io.UrlResource;
 
 @Getter
 public class UserResponseDto {

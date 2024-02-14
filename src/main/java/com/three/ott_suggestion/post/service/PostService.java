@@ -5,7 +5,7 @@ import com.three.ott_suggestion.global.exception.InvalidPostException;
 import com.three.ott_suggestion.global.exception.InvalidUserException;
 import com.three.ott_suggestion.image.entity.PostImage;
 import com.three.ott_suggestion.image.service.ImageService;
-import com.three.ott_suggestion.post.SearchType;
+import com.three.ott_suggestion.post.entity.SearchType;
 import com.three.ott_suggestion.post.dto.PostRequestDto;
 import com.three.ott_suggestion.post.dto.PostResponseDto;
 import com.three.ott_suggestion.post.entity.Post;
