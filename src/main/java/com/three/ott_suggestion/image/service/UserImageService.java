@@ -36,7 +36,7 @@ public class UserImageService implements ImageService<UserImage> {
     @Override
     public String getImage(Long id) {
         UserImage image = userImageRepository.findById(id)
-                .orElseThrow(() -> new InvalidInputException("프로필 이미지가 존재하지 않습니다."));
+            .orElseThrow(() -> new InvalidInputException("프로필 이미지가 존재하지 않습니다."));
         return image.getFilePath();
     }
 
@@ -46,7 +46,7 @@ public class UserImageService implements ImageService<UserImage> {
     public void updateImage(User user, MultipartFile imageFile) throws IOException {
         UserImage image = getUserImage(imageFile);
         UserImage userImage = userImageRepository.findById(user.getUserImage().getId())
-                .orElseThrow(() -> new InvalidInputException("프로필 이미지가 존재하지 않습니다."));
+            .orElseThrow(() -> new InvalidInputException("프로필 이미지가 존재하지 않습니다."));
         userImage.updateUserImage(image);
     }
 
@@ -60,11 +60,11 @@ public class UserImageService implements ImageService<UserImage> {
         String contentType = imageFile.getContentType();
 
         UserImage image = UserImage.builder()
-                .fileName(originalFilename)
-                .saveFileName(saveFileName)
-                .contentType(contentType)
-                .filePath(filePath)
-                .build();
+            .fileName(originalFilename)
+            .saveFileName(saveFileName)
+            .contentType(contentType)
+            .filePath(filePath)
+            .build();
         return image;
     }
 

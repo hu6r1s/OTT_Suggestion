@@ -1,5 +1,6 @@
 package com.three.ott_suggestion.image.entity;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -21,9 +22,13 @@ public class PostImage {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Column(name = "file_name")
     private String fileName;
+    @Column(name = "save_file_name")
     private String saveFileName;
+    @Column(name = "content_type")
     private String contentType;
+    @Column(name = "file_path")
     private String filePath;
 
     public void updatePostImage(PostImage image) {

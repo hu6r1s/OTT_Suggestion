@@ -10,6 +10,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> findByEmail(String email);
 
     List<User> findByNicknameContains(String nickname);
-  
+
     User findByVerificationCode(String verificationCode);
 }

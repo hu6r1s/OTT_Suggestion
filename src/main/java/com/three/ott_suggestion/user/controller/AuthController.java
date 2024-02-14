@@ -39,11 +39,11 @@ public class AuthController {
     @Operation(summary = "회원가입", description = "회원가입 할 수 있는 API")
     @PostMapping("/signup")
     public ResponseEntity<CommonResponse<List<ErrorResponse>>> signup(
-            @RequestBody @Valid SignupRequestDto signupRequestDto,
-            HttpServletRequest request,
-            BindingResult bindingResult
+        @RequestBody @Valid SignupRequestDto signupRequestDto,
+        HttpServletRequest request,
+        BindingResult bindingResult
     )
-            throws UnsupportedEncodingException, MessagingException {
+        throws UnsupportedEncodingException, MessagingException {
 
         // Validation 예외처리
         if (bindingResult.hasErrors()) {
@@ -54,14 +54,14 @@ public class AuthController {
                 ErrorResponseList.add(exceptionResponse);
             }
             return ResponseEntity.status(HttpStatus.BAD_REQUEST.value()).body(
-                    CommonResponse.<List<ErrorResponse>>builder().message("회원가입 실패")
-                            .data(ErrorResponseList).build());
+                CommonResponse.<List<ErrorResponse>>builder().message("회원가입 실패")
+                    .data(ErrorResponseList).build());
         }
 
         authService.signup(signupRequestDto, getSiteURL(request));
 
         return ResponseEntity.status(HttpStatus.OK.value()).body(
-                CommonResponse.<List<ErrorResponse>>builder().message("회원가입 성공").build()
+            CommonResponse.<List<ErrorResponse>>builder().message("회원가입 성공").build()
         );
     }
 
@@ -70,7 +70,7 @@ public class AuthController {
     public ResponseEntity<CommonResponse<Void>> verifyUser(@RequestParam String code) {
         if (authService.verify(code)) {
             return ResponseEntity.status(HttpStatus.OK.value()).body(
-                    CommonResponse.<Void>builder().message("이메일 인증 완료").build()
+                CommonResponse.<Void>builder().message("이메일 인증 완료").build()
             );
         } else {
             throw new RuntimeException();
@@ -80,11 +80,11 @@ public class AuthController {
     @Operation(summary = "로그아웃", description = "로그아웃 할 수 있는 API")
     @PostMapping("/logout")
     public ResponseEntity<CommonResponse<Void>> logout(
-            @AuthenticationPrincipal UserDetails userDetails) {
+        @AuthenticationPrincipal UserDetails userDetails) {
         try {
             authService.logout(userDetails);
             return ResponseEntity.status(HttpStatus.OK.value()).body(
-                    CommonResponse.<Void>builder().message("Refresh Token 제거").build()
+                CommonResponse.<Void>builder().message("Refresh Token 제거").build()
             );
         } catch (Exception e) {
             throw new RuntimeException(e);

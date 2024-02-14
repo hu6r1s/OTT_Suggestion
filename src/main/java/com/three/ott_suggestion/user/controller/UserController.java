@@ -38,20 +38,20 @@ public class UserController {
     @Operation(summary = "마이페이지 조회", description = "마이페이지 정보 조회할 수 있는 API")
     @GetMapping
     public ResponseEntity<CommonResponse<UserResponseDto>> getUserInfo(
-            @AuthenticationPrincipal UserDetailsImpl userDetails) throws MalformedURLException {
+        @AuthenticationPrincipal UserDetailsImpl userDetails) throws MalformedURLException {
         return ResponseEntity.status(HttpStatus.OK.value()).body(
-                CommonResponse.<UserResponseDto>builder()
-                        .message("회원 조회 성공")
-                        .data(userService.getUserInfo(userDetails)).build());
+            CommonResponse.<UserResponseDto>builder()
+                .message("회원 조회 성공")
+                .data(userService.getUserInfo(userDetails)).build());
     }
 
     @Operation(summary = "마이페이지 수정", description = "마이페이지 정보 수정할 수 있는 API")
     @PutMapping
     public ResponseEntity<CommonResponse<List<ErrorResponse>>> update(
-            @AuthenticationPrincipal UserDetailsImpl userDetails,
-            @RequestPart UpdateRequestDto requestDto,
-            @RequestPart(required = false) MultipartFile image,
-            BindingResult bindingResult
+        @AuthenticationPrincipal UserDetailsImpl userDetails,
+        @RequestPart UpdateRequestDto requestDto,
+        @RequestPart(required = false) MultipartFile image,
+        BindingResult bindingResult
     ) throws IOException {
         if (bindingResult.hasErrors()) {
             List<FieldError> fieldErrors = bindingResult.getFieldErrors();
@@ -61,13 +61,13 @@ public class UserController {
                 ErrorResponseList.add(exceptionResponse);
             }
             return ResponseEntity.status(HttpStatus.BAD_REQUEST.value()).body(
-                    CommonResponse.<List<ErrorResponse>>builder().message("수정을 실패했습니다.")
-                            .data(ErrorResponseList).build());
+                CommonResponse.<List<ErrorResponse>>builder().message("수정을 실패했습니다.")
+                    .data(ErrorResponseList).build());
         }
 
         userService.updateUserInfo(userDetails, requestDto, image);
 
         return ResponseEntity.status(HttpStatus.OK.value()).body(
-                CommonResponse.<List<ErrorResponse>>builder().message("수정되었습니다").build());
+            CommonResponse.<List<ErrorResponse>>builder().message("수정되었습니다").build());
     }
 }

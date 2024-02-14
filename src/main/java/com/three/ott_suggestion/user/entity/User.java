@@ -46,7 +46,7 @@ public class User extends TimeStamped {
     private boolean enabled;
 
     public User(String email, String password, String nickname, String introduction,
-            UserImage image, String verificationCode, boolean enabled) {
+        UserImage image, String verificationCode, boolean enabled) {
         this.email = email;
         this.password = password;
         this.nickname = nickname;

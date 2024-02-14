@@ -38,7 +38,7 @@ public class AuthService {
 
     @Transactional
     public void signup(SignupRequestDto signupRequestDto, String siteURL)
-            throws UnsupportedEncodingException, MessagingException {
+        throws UnsupportedEncodingException, MessagingException {
 
         String email = signupRequestDto.getEmail();
         String password = passwordEncoder.encode(signupRequestDto.getPassword());
@@ -54,11 +54,11 @@ public class AuthService {
         String fileName = "default.jpg";
         String filePath = localPath + fileName;
         UserImage image = UserImage.builder()
-                .fileName(fileName)
-                .saveFileName("default")
-                .contentType("image/png")
-                .filePath(filePath)
-                .build();
+            .fileName(fileName)
+            .saveFileName("default")
+            .contentType("image/png")
+            .filePath(filePath)
+            .build();
         userImageRepository.save(image);
         User user = new User(email, password, nickname, introduction, image, randomCode, false);
         userRepository.save(user);
@@ -83,23 +83,23 @@ public class AuthService {
     @Transactional
     public void logout(UserDetails userDetails) {
         User user = userRepository.findByEmail(userDetails.getUsername()).orElseThrow(() ->
-                new IllegalArgumentException("User가 존재하지 않습니다.")
+            new IllegalArgumentException("User가 존재하지 않습니다.")
         );
         RefreshToken refreshToken = refreshTokenRepository.findByUserId(user.getId());
         refreshTokenRepository.delete(refreshToken);
     }
 
     private void sendVerificationEmail(User user, String siteURL)
-            throws MessagingException, UnsupportedEncodingException {
+        throws MessagingException, UnsupportedEncodingException {
         String toAddress = user.getEmail();
         String fromAddress = "test!";
         String senderName = "three";
         String subject = "Please verify your registration";
         String content = "Dear [[name]],<br>"
-                + "Please click the link below to verify your registration:<br>"
-                + "<h3><a href=\"[[URL]]\" target=\"_self\">VERIFY</a></h3>"
-                + "Thank you,<br>"
-                + "Your company name.";
+            + "Please click the link below to verify your registration:<br>"
+            + "<h3><a href=\"[[URL]]\" target=\"_self\">VERIFY</a></h3>"
+            + "Thank you,<br>"
+            + "Your company name.";
 
         MimeMessage message = mailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message);

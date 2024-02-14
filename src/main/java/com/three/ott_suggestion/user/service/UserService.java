@@ -30,10 +30,10 @@ public class UserService {
 
     @Transactional
     public void updateUserInfo(UserDetailsImpl userDetails, UpdateRequestDto requestDto,
-            MultipartFile imageFile)
-            throws IOException {
+        MultipartFile imageFile)
+        throws IOException {
         User user = userRepository.findByEmail(userDetails.getUsername()).orElseThrow(() ->
-                new IllegalArgumentException("User가 존재하지 않습니다.")
+            new IllegalArgumentException("User가 존재하지 않습니다.")
         );
         if (!imageFile.getOriginalFilename().isEmpty()) {
             userImageService.updateImage(user, imageFile);
@@ -47,7 +47,7 @@ public class UserService {
 
     public User findUser(Long userId) {
         return userRepository.findById(userId).orElseThrow(
-                () -> new InvalidInputException("해당 User는 존재하지 않습니다.")
+            () -> new InvalidInputException("해당 User는 존재하지 않습니다.")
         );
     }
 }

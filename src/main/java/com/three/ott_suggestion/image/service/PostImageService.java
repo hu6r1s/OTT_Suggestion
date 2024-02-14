@@ -35,7 +35,7 @@ public class PostImageService implements ImageService<PostImage> {
     @Override
     public String getImage(Long id) throws MalformedURLException {
         PostImage image = postImageRepository.findById(id)
-                .orElseThrow(() -> new InvalidInputException("게시물 이미지가 존재하지 않습니다"));
+            .orElseThrow(() -> new InvalidInputException("게시물 이미지가 존재하지 않습니다"));
         return image.getFilePath();
     }
 
@@ -44,7 +44,7 @@ public class PostImageService implements ImageService<PostImage> {
     public void updateImage(Post post, MultipartFile imageFile) throws IOException {
         PostImage image = getPostImage(imageFile);
         PostImage postImage = postImageRepository.findById(post.getPostImage().getId())
-                .orElseThrow(() -> new InvalidInputException("게시물 이미지가 존재하지 않습니다"));
+            .orElseThrow(() -> new InvalidInputException("게시물 이미지가 존재하지 않습니다"));
         postImage.updatePostImage(image);
     }
 
@@ -57,11 +57,11 @@ public class PostImageService implements ImageService<PostImage> {
         String contentType = file.getContentType();
 
         PostImage image = PostImage.builder()
-                .fileName(originalFilename)
-                .saveFileName(saveFileName)
-                .contentType(contentType)
-                .filePath(filePath)
-                .build();
+            .fileName(originalFilename)
+            .saveFileName(saveFileName)
+            .contentType(contentType)
+            .filePath(filePath)
+            .build();
         return image;
     }
 

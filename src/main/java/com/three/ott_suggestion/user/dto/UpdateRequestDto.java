@@ -6,6 +6,5 @@ import lombok.Getter;
 public class UpdateRequestDto {
 
     private String nickname;
-
     private String introduction;
 }

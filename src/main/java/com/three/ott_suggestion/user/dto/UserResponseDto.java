@@ -6,7 +6,6 @@ import lombok.Setter;
 import org.springframework.core.io.UrlResource;
 
 @Getter
-@Setter
 public class UserResponseDto {
 
     private Long id;
@@ -19,7 +18,7 @@ public class UserResponseDto {
 
     private String imgUrl;
 
-    public  UserResponseDto(User user, String resource) {
+    public UserResponseDto(User user, String resource) {
         this.id = user.getId();
         this.email = user.getEmail();
         this.nickname = user.getNickname();

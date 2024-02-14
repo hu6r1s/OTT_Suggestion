@@ -34,7 +34,7 @@ public class PostService {
 
     @Transactional
     public void createPost(PostRequestDto requestDto, User user, MultipartFile image)
-            throws Exception {
+        throws Exception {
         Post post = new Post(requestDto, user);
         PostImage imageUrl = postImageService.createImage(image);
         post.createImage(imageUrl);
@@ -44,20 +44,20 @@ public class PostService {
     public List<PostResponseDto> getAllPosts() {
 
         return postRepository.findAllByDeletedAtIsNullOrderByCreatedAtDesc().stream().map(e -> {
-                    String imageUrl;
-                    try {
-                        imageUrl = postImageService.getImage(e.getPostImage().getId());
-                    } catch (MalformedURLException ex) {
-                        throw new RuntimeException(ex);
-                    }
-                    return new PostResponseDto(e, imageUrl);
-                })
-                .toList();
+                String imageUrl;
+                try {
+                    imageUrl = postImageService.getImage(e.getPostImage().getId());
+                } catch (MalformedURLException ex) {
+                    throw new RuntimeException(ex);
+                }
+                return new PostResponseDto(e, imageUrl);
+            })
+            .toList();
     }
 
     public PostResponseDto getPost(Long postId) throws MalformedURLException {
         Post post = postRepository.findPostByIdAndDeletedAtIsNull(postId).orElseThrow(
-                () -> new InvalidInputException("해당 게시글은 삭제 되었습니다.")
+            () -> new InvalidInputException("해당 게시글은 삭제 되었습니다.")
         );
         String imageUrl = postImageService.getImage(post.getPostImage().getId());
         return new PostResponseDto(post, imageUrl);
@@ -65,8 +65,8 @@ public class PostService {
 
     @Transactional
     public PostResponseDto updatePost(Long userId, Long postId, PostRequestDto requestDto,
-            MultipartFile imageFile)
-            throws IOException {
+        MultipartFile imageFile)
+        throws IOException {
         Post post = findPost(postId);
         postImageService.updateImage(post, imageFile);
         validateUser(userId, post);
@@ -80,30 +80,30 @@ public class PostService {
             List<User> users = userService.findContainUser(keyword);
             for (User user : users) {
                 searchResult.add(
-                        postRepository.findByUserId(user.getId()).stream().map(e -> {
-                                    String imageUrl;
-                                    try {
-                                        imageUrl = postImageService.getImage(e.getPostImage().getId());
-                                    } catch (MalformedURLException ex) {
-                                        throw new InvalidUserException("해당게시물이 존재하지 않습니다.");
-                                    }
-                                    return new PostResponseDto(e, imageUrl);
-                                })
-                                .toList());
+                    postRepository.findByUserId(user.getId()).stream().map(e -> {
+                            String imageUrl;
+                            try {
+                                imageUrl = postImageService.getImage(e.getPostImage().getId());
+                            } catch (MalformedURLException ex) {
+                                throw new InvalidUserException("해당게시물이 존재하지 않습니다.");
+                            }
+                            return new PostResponseDto(e, imageUrl);
+                        })
+                        .toList());
             }
             return searchResult;
         } else if (type.equals(SearchType.TITLE.type())) {
             searchResult.add(
-                    postRepository.findByTitleContains(keyword).stream().map(e -> {
-                                String imageUrl;
-                                try {
-                                    imageUrl = postImageService.getImage(e.getPostImage().getId());
-                                } catch (MalformedURLException ex) {
-                                    throw new InvalidUserException("해당게시물이 존재하지 않습니다.");
-                                }
-                                return new PostResponseDto(e, imageUrl);
-                            })
-                            .toList());
+                postRepository.findByTitleContains(keyword).stream().map(e -> {
+                        String imageUrl;
+                        try {
+                            imageUrl = postImageService.getImage(e.getPostImage().getId());
+                        } catch (MalformedURLException ex) {
+                            throw new InvalidUserException("해당게시물이 존재하지 않습니다.");
+                        }
+                        return new PostResponseDto(e, imageUrl);
+                    })
+                    .toList());
             return searchResult;
         }
         throw new InvalidInputException("query 입력값이 잘못 되었습니다.");
@@ -124,10 +124,10 @@ public class PostService {
 
     public Post findPost(Long postId) {
         return postRepository.findById(postId).orElseThrow(
-                () -> {
-                    String message = "해당 게시글이 없습니다.";
-                    return new InvalidPostException(message);
-                }
+            () -> {
+                String message = "해당 게시글이 없습니다.";
+                return new InvalidPostException(message);
+            }
         );
     }
 }
