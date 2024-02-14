@@ -17,7 +17,7 @@ import org.springframework.web.multipart.MultipartFile;
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
-public class PostImageServiceImpl {
+public class PostImageService {
 
     @Value("${upload.path}")
     private String uploadPath;

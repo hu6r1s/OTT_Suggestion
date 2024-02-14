@@ -18,7 +18,7 @@ import org.springframework.web.multipart.MultipartFile;
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
-public class UserImageServiceImpl {
+public class UserImageService {
 
     private final UserImageRepository userImageRepository;
 

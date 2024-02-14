@@ -2,7 +2,7 @@ package com.three.ott_suggestion.user.service;
 
 import com.three.ott_suggestion.global.exception.InvalidInputException;
 import com.three.ott_suggestion.global.util.UserDetailsImpl;
-import com.three.ott_suggestion.image.service.UserImageServiceImpl;
+import com.three.ott_suggestion.image.service.UserImageService;
 import com.three.ott_suggestion.user.dto.UpdateRequestDto;
 import com.three.ott_suggestion.user.dto.UserResponseDto;
 import com.three.ott_suggestion.user.entity.User;
@@ -20,7 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
 public class UserService {
 
     private final UserRepository userRepository;
-    private final UserImageServiceImpl userImageService;
+    private final UserImageService userImageService;
 
     public UserResponseDto getUserInfo(UserDetailsImpl userDetails) throws MalformedURLException {
         String resource = userImageService.getImage(userDetails.getUser().getId());
