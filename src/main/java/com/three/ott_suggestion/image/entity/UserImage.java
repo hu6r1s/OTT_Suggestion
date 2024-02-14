@@ -1,10 +1,9 @@
-package com.three.ott_suggestion.image;
+package com.three.ott_suggestion.image.entity;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -13,21 +12,21 @@ import lombok.NoArgsConstructor;
 @Builder
 @Entity
 @Getter
-@Table(name = "post_images")
 @AllArgsConstructor
 @NoArgsConstructor
-public class PostImage {
-
+public class UserImage {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String fileName;
     private String saveFileName;
     private String contentType;
+    private String filePath;
 
-    public void updatePostImage(PostImage image) {
-        this.fileName = image.getFileName();
-        this.saveFileName = image.getSaveFileName();
-        this.contentType = image.getContentType();
+    public void updateUserImage(UserImage userImage) {
+        this.fileName = userImage.getFileName();
+        this.saveFileName = userImage.getSaveFileName();
+        this.contentType = userImage.getContentType();
+        this.filePath = userImage.getFilePath();
     }
 }

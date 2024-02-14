@@ -1,7 +1,7 @@
 package com.three.ott_suggestion.user.entity;
 
 import com.three.ott_suggestion.global.util.TimeStamped;
-import com.three.ott_suggestion.image.UserImage;
+import com.three.ott_suggestion.image.entity.UserImage;
 import com.three.ott_suggestion.user.dto.UpdateRequestDto;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -11,7 +11,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 

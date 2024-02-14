@@ -2,9 +2,8 @@ package com.three.ott_suggestion.image.service;
 
 import com.three.ott_suggestion.global.exception.InvalidInputException;
 import com.three.ott_suggestion.image.repository.PostImageRepository;
-import com.three.ott_suggestion.image.PostImage;
+import com.three.ott_suggestion.image.entity.PostImage;
 import com.three.ott_suggestion.post.entity.Post;
-import com.three.ott_suggestion.user.entity.User;
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -35,8 +34,7 @@ public class PostImageService implements ImageService<PostImage> {
     @Override
     public String getImage(Long id) throws MalformedURLException {
         PostImage image = postImageRepository.findById(id).orElseThrow(() -> new InvalidInputException("게시물 이미지가 존재하지 않습니다"));
-        String fileName = image.getSaveFileName();
-        return uploadPath + fileName;
+        return image.getFilePath();
     }
 
     @Transactional
@@ -51,6 +49,7 @@ public class PostImageService implements ImageService<PostImage> {
         String originalFilename = file.getOriginalFilename();
         String saveFileName = createSaveFileName(originalFilename);
         file.transferTo(new File(getFullPath(saveFileName)));
+        String filePath = uploadPath + saveFileName;
 
         String contentType = file.getContentType();
 
@@ -58,6 +57,7 @@ public class PostImageService implements ImageService<PostImage> {
                 .fileName(originalFilename)
                 .saveFileName(saveFileName)
                 .contentType(contentType)
+                .filePath(filePath)
                 .build();
         return image;
     }

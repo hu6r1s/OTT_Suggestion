@@ -1,16 +1,15 @@
 package com.three.ott_suggestion.user.service;
 
-import com.three.ott_suggestion.image.UserImage;
+import com.three.ott_suggestion.image.entity.UserImage;
 import com.three.ott_suggestion.image.repository.UserImageRepository;
 import com.three.ott_suggestion.user.dto.SignupRequestDto;
 import com.three.ott_suggestion.user.entity.RefreshToken;
 import com.three.ott_suggestion.user.entity.User;
 import com.three.ott_suggestion.user.repository.RefreshTokenRepository;
 import com.three.ott_suggestion.user.repository.UserRepository;
-import java.net.MalformedURLException;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.core.io.UrlResource;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -21,6 +20,9 @@ import org.springframework.web.server.ResponseStatusException;
 @Service
 @RequiredArgsConstructor
 public class AuthService {
+
+    @Value("${defaultImage.path}")
+    private String localPath;
 
     private final UserRepository userRepository;
     private final UserImageRepository userImageRepository;
@@ -40,11 +42,13 @@ public class AuthService {
         if (checkUserEmail.isPresent()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "중복된 email 입니다.");
         }
-        String path = "1.jpg";
+        String fileName = "1.jpg";
+        String filePath = localPath + fileName;
         UserImage image = UserImage.builder()
-                .fileName(path)
+                .fileName(fileName)
                 .saveFileName("default")
                 .contentType("image/png")
+                .filePath(filePath)
                 .build();
         userImageRepository.save(image);
         User user = new User(email, password, nickname, introduction, image);

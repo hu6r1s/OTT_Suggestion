@@ -3,7 +3,7 @@ package com.three.ott_suggestion.post.service;
 import com.three.ott_suggestion.global.exception.InvalidInputException;
 import com.three.ott_suggestion.global.exception.InvalidPostException;
 import com.three.ott_suggestion.global.exception.InvalidUserException;
-import com.three.ott_suggestion.image.PostImage;
+import com.three.ott_suggestion.image.entity.PostImage;
 import com.three.ott_suggestion.image.service.ImageService;
 import com.three.ott_suggestion.post.SearchType;
 import com.three.ott_suggestion.post.dto.PostRequestDto;
@@ -34,7 +34,6 @@ public class PostService {
     @Transactional
     public void createPost(PostRequestDto requestDto, User user, MultipartFile image)
             throws Exception {
-        log.info(user.getEmail());
         Post post = new Post(requestDto, user);
         PostImage imageUrl = postImageService.createImage(image);
         post.createImage(imageUrl);

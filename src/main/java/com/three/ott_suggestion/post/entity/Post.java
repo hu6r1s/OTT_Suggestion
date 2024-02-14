@@ -1,7 +1,7 @@
 package com.three.ott_suggestion.post.entity;
 
 import com.three.ott_suggestion.global.util.TimeStamped;
-import com.three.ott_suggestion.image.PostImage;
+import com.three.ott_suggestion.image.entity.PostImage;
 import com.three.ott_suggestion.post.dto.PostRequestDto;
 import com.three.ott_suggestion.user.entity.User;
 import jakarta.persistence.Column;

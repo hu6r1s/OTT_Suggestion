@@ -1,7 +1,7 @@
 package com.three.ott_suggestion.user.service;
 
 import com.three.ott_suggestion.global.util.UserDetailsImpl;
-import com.three.ott_suggestion.image.UserImage;
+import com.three.ott_suggestion.image.entity.UserImage;
 import com.three.ott_suggestion.image.service.ImageService;
 import com.three.ott_suggestion.user.dto.UpdateRequestDto;
 import com.three.ott_suggestion.user.dto.UserResponseDto;
@@ -10,7 +10,6 @@ import com.three.ott_suggestion.user.repository.UserRepository;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;

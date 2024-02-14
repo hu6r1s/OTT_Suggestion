@@ -2,9 +2,8 @@ package com.three.ott_suggestion.image.service;
 
 
 import com.three.ott_suggestion.global.exception.InvalidInputException;
-import com.three.ott_suggestion.image.UserImage;
+import com.three.ott_suggestion.image.entity.UserImage;
 import com.three.ott_suggestion.image.repository.UserImageRepository;
-import com.three.ott_suggestion.post.entity.Post;
 import com.three.ott_suggestion.user.entity.User;
 import java.io.File;
 import java.io.IOException;
@@ -40,10 +39,7 @@ public class UserImageService implements ImageService<UserImage> {
     @Override
     public String getImage(Long id) {
         UserImage image = userImageRepository.findById(id).orElseThrow(() -> new InvalidInputException("프로필 이미지가 존재하지 않습니다."));
-        if (image.getSaveFileName().equals("default")) {
-            return localPath + image.getFileName();
-        }
-        return uploadPath + image.getSaveFileName();
+        return image.getFilePath();
     }
 
 
@@ -61,12 +57,15 @@ public class UserImageService implements ImageService<UserImage> {
         String saveFileName = createSaveFileName(originalFilename);
         imageFile.transferTo(new File(getFullPath(saveFileName)));
 
+        String filePath = uploadPath + saveFileName;
+
         String contentType = imageFile.getContentType();
 
         UserImage image = UserImage.builder()
                 .fileName(originalFilename)
                 .saveFileName(saveFileName)
                 .contentType(contentType)
+                .filePath(filePath)
                 .build();
         return image;
     }
