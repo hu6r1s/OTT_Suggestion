@@ -2,6 +2,8 @@ package com.three.ott_suggestion.follow;
 
 import com.three.ott_suggestion.global.response.CommonResponse;
 import com.three.ott_suggestion.global.util.UserDetailsImpl;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,10 +15,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RequiredArgsConstructor
 @RestController
+@Tag(name = "Follow", description = "팔로잉 컨트롤러")
 public class FollowController {
 
     private final FollowService followService;
 
+    @Operation(summary = "팔로우 하기", description = "팔로우 할 수 있는 API")
     @PostMapping("/follows/{toUserId}")
     public ResponseEntity<CommonResponse<Void>> createFollow(
         @AuthenticationPrincipal UserDetailsImpl userDetails,
@@ -26,6 +30,7 @@ public class FollowController {
             CommonResponse.<Void>builder().message("팔로우가 성공하였습니다.").build());
     }
 
+    @Operation(summary = "팔로우 취소", description = "팔로우 취소할 수 있는 API")
     @DeleteMapping("/follows/{toUserId}")
     public ResponseEntity<CommonResponse<Void>> deleteFollow(
         @AuthenticationPrincipal UserDetailsImpl userDetails,
