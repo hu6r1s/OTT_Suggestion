@@ -8,9 +8,11 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class CommentResponseDto {
 
+    Long id;
     String content;
 
     public CommentResponseDto(Comment comment) {
+        this.id = comment.getId();
         this.content = comment.getContent();
     }
 }
