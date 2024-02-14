@@ -12,9 +12,9 @@ public interface LikeRepository extends JpaRepository<Like, Long> {
     Long countByPostId(Long postId);
 
     @Query("SELECT l.postId, COUNT(DISTINCT l.userId) AS likeCount " +
-        "FROM Like l " +
-        "GROUP BY l.postId " +
-        "ORDER BY likeCount DESC LIMIT 3"
+            "FROM Like l " +
+            "GROUP BY l.postId " +
+            "ORDER BY likeCount DESC LIMIT 3"
     )
     List<Object[]> findTop3LikedPosts();
 }

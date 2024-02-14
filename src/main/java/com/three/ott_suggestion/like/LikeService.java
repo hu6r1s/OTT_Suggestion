@@ -2,7 +2,6 @@ package com.three.ott_suggestion.like;
 
 import com.three.ott_suggestion.global.exception.InvalidInputException;
 import com.three.ott_suggestion.post.dto.PostResponseDto;
-import com.three.ott_suggestion.post.entity.Post;
 import com.three.ott_suggestion.post.service.PostService;
 import com.three.ott_suggestion.user.entity.User;
 import java.util.ArrayList;
@@ -51,7 +50,7 @@ public class LikeService {
 
         for (Like like : topThreeLikes) {
             PostResponseDto postResponseDto = new PostResponseDto(
-                postService.findPost(like.getPostId()));
+                    postService.findPost(like.getPostId()));
             result.add(postResponseDto);
         }
         return result;
