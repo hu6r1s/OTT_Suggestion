@@ -33,9 +33,10 @@
 
 [API 명세 링크](https://www.notion.so/d24c590d55e645bba7523e67051b4fd9?v=4ab5a98eaa7e47a3accfd35cd0113595&pvs=4)
 
-## ERD(확인 부탁🙏🏻)
+## ERD
 
-![image](https://github.com/threethreethreethree/OTT_Suggestion/assets/67190090/aeec954b-c90f-4288-82e0-04a240453361)
+![image](https://github.com/threethreethreethree/OTT_Suggestion/assets/67190090/82658ced-e0d5-4e06-8814-384a827e01ec)
+
 
 ## 환경 변수
 ```
