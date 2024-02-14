@@ -1,5 +1,7 @@
 package com.three.ott_suggestion.image.service;
 
+import com.three.ott_suggestion.user.entity.User;
+import java.io.IOException;
 import java.net.MalformedURLException;
 import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
@@ -11,5 +13,8 @@ public interface ImageService<T> {
     @Transactional
     T createImage(MultipartFile file) throws Exception;
 
-    UrlResource getImage(Long id) throws MalformedURLException;
+    @Transactional
+    void updateImage(User user, MultipartFile imageFile) throws IOException;
+
+    String getImage(Long id) throws MalformedURLException;
 }

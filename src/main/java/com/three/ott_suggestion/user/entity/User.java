@@ -41,11 +41,12 @@ public class User extends TimeStamped {
     @JoinColumn(name = "user_id")
     private UserImage userImage;
 
-    public User(String email, String password, String nickname, String introduction) {
+    public User(String email, String password, String nickname, String introduction,UserImage image) {
         this.email = email;
         this.password = password;
         this.nickname = nickname;
         this.introduction = introduction;
+        this.userImage = image;
     }
 
     public void update(UpdateRequestDto requestDto) {
@@ -53,7 +54,7 @@ public class User extends TimeStamped {
         this.introduction = requestDto.getIntroduction();
     }
 
-    public void createImage(UserImage userImage){
+    public void updateImage(UserImage userImage){
         this.userImage = userImage;
     }
 }

@@ -21,4 +21,10 @@ public class UserImage {
     private String fileName;
     private String saveFileName;
     private String contentType;
+
+    public void updateUserImage(UserImage userImage) {
+        this.fileName = userImage.getFileName();
+        this.saveFileName = userImage.getSaveFileName();
+        this.contentType = userImage.getContentType();
+    }
 }

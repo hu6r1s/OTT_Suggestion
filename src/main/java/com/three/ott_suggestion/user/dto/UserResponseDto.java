@@ -17,9 +17,9 @@ public class UserResponseDto {
 
     private String introduction;
 
-    private UrlResource imgUrl;
+    private String imgUrl;
 
-    public  UserResponseDto(User user, UrlResource resource) {
+    public  UserResponseDto(User user, String resource) {
         this.id = user.getId();
         this.email = user.getEmail();
         this.nickname = user.getNickname();

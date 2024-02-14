@@ -1,43 +1,73 @@
 package com.three.ott_suggestion.image.service;
 
 
+import com.three.ott_suggestion.global.exception.InvalidInputException;
 import com.three.ott_suggestion.image.UserImage;
 import com.three.ott_suggestion.image.repository.UserImageRepository;
+import com.three.ott_suggestion.user.entity.User;
 import java.io.File;
+import java.io.IOException;
 import java.net.MalformedURLException;
-import java.util.Optional;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 
 @Service
 @RequiredArgsConstructor
-public class UserImageService implements ImageService<UserImage>{
+@Transactional(readOnly = true)
+public class UserImageService implements ImageService<UserImage> {
 
     private final UserImageRepository userImageRepository;
 
     @Value("${upload.path}")
     private String uploadPath;
-    @Override
-    public UserImage createImage(MultipartFile file) throws Exception {
-        String originalFilename = file.getOriginalFilename();
-        String saveFileName = createSaveFileName(originalFilename);
-        file.transferTo(new File(getFullPath(saveFileName)));
 
-        String contentType = file.getContentType();
+    @Value("${defaultImage.path}")
+    private String localPath;
+
+    @Override
+    @Transactional
+    public UserImage createImage(MultipartFile imageFile) throws Exception {
+        UserImage image = getUserImage(imageFile);
+        userImageRepository.save(image);
+        return image;
+    }
+    @Override
+    @Transactional
+    public void updateImage(User user, MultipartFile imageFile) throws IOException {
+        UserImage image = getUserImage(imageFile);
+        UserImage userImage = userImageRepository.findById(user.getUserImage().getId()).orElseThrow(()-> new InvalidInputException("프로필 이미지가 존재하지 않습니다."));
+        userImage.updateUserImage(image);
+    }
+
+    private UserImage getUserImage(MultipartFile imageFile) throws IOException {
+        String originalFilename = imageFile.getOriginalFilename();
+        String saveFileName = createSaveFileName(originalFilename);
+        imageFile.transferTo(new File(getFullPath(saveFileName)));
+
+        String contentType = imageFile.getContentType();
 
         UserImage image = UserImage.builder()
                 .fileName(originalFilename)
                 .saveFileName(saveFileName)
                 .contentType(contentType)
                 .build();
-        userImageRepository.save(image);
         return image;
     }
+
+    @Override
+    public String getImage(Long id){
+        UserImage image = userImageRepository.findById(id).orElseThrow();
+        if (image.getSaveFileName().equals("default")) {
+            return localPath + image.getFileName();
+        }
+        return uploadPath + image.getSaveFileName();
+    }
+
 
 
 
@@ -54,15 +84,5 @@ public class UserImageService implements ImageService<UserImage>{
 
     private String getFullPath(String filename) {
         return uploadPath + filename;
-    }
-
-    @Override
-    public UrlResource getImage(Long id) throws MalformedURLException {
-        Optional<UserImage> image = userImageRepository.findById(id);
-        if(image.isPresent()){
-            String fileName = image.get().getSaveFileName();
-            return new UrlResource("file:" + uploadPath + fileName);
-        }
-        return null;
     }
 }

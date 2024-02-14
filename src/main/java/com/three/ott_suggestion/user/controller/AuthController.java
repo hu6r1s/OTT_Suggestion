@@ -18,7 +18,10 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 @Slf4j
 @RestController
@@ -30,7 +33,9 @@ public class AuthController {
 
     @PostMapping("/signup")
     public ResponseEntity<CommonResponse<List<ErrorResponse>>> signup(
-        @RequestBody @Valid SignupRequestDto signupRequestDto, BindingResult bindingResult) {
+            @RequestBody @Valid SignupRequestDto signupRequestDto,
+            BindingResult bindingResult
+    ) {
 
         // Validation 예외처리
         if (bindingResult.hasErrors()) {
@@ -41,23 +46,24 @@ public class AuthController {
                 ErrorResponseList.add(exceptionResponse);
             }
             return ResponseEntity.status(HttpStatus.BAD_REQUEST.value()).body(
-                CommonResponse.<List<ErrorResponse>>builder().message("회원가입 실패")
-                    .data(ErrorResponseList).build());
+                    CommonResponse.<List<ErrorResponse>>builder().message("회원가입 실패")
+                            .data(ErrorResponseList).build());
         }
 
         authService.signup(signupRequestDto);
 
         return ResponseEntity.status(HttpStatus.OK.value()).body(
-            CommonResponse.<List<ErrorResponse>>builder().message("회원가입 성공").build()
+                CommonResponse.<List<ErrorResponse>>builder().message("회원가입 성공").build()
         );
     }
 
     @PostMapping("/logout")
-    public ResponseEntity<CommonResponse<Void>> logout(@AuthenticationPrincipal UserDetails userDetails) {
+    public ResponseEntity<CommonResponse<Void>> logout(
+            @AuthenticationPrincipal UserDetails userDetails) {
         try {
             authService.logout(userDetails);
             return ResponseEntity.status(HttpStatus.OK.value()).body(
-                CommonResponse.<Void>builder().message("Refresh Token 제거").build()
+                    CommonResponse.<Void>builder().message("Refresh Token 제거").build()
             );
         } catch (Exception e) {
             throw new RuntimeException(e);
