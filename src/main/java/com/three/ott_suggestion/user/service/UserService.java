@@ -34,9 +34,7 @@ public class UserService {
         User user = userRepository.findByEmail(userDetails.getUsername()).orElseThrow(() ->
             new IllegalArgumentException("User가 존재하지 않습니다.")
         );
-        if (!imageFile.getOriginalFilename().isEmpty()) {
-            userImageService.updateImage(user, imageFile);
-        }
+        userImageService.updateImage(user, imageFile);
         user.update(requestDto);
     }
 

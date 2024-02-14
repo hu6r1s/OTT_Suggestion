@@ -20,6 +20,9 @@ import org.springframework.web.multipart.MultipartFile;
 @Transactional(readOnly = true)
 public class UserImageService {
 
+    @Value("${defaultImage.path}")
+    private String localPath;
+
     private final UserImageRepository userImageRepository;
 
     @Value("${upload.path}")
@@ -48,7 +51,7 @@ public class UserImageService {
     }
 
     private UserImage getUserImage(MultipartFile imageFile) throws IOException {
-        if (!imageFile.isEmpty()) {
+        if (imageFile != null) {
             String originalFilename = imageFile.getOriginalFilename();
             String saveFileName = createSaveFileName(originalFilename);
             imageFile.transferTo(new File(getFullPath(saveFileName)));
@@ -65,11 +68,13 @@ public class UserImageService {
                 .build();
             return image;
         }
+        String defaultFileName = "default.jpg";
+        String defaultFilePath = localPath + defaultFileName;
         return UserImage.builder()
-            .fileName(null)
-            .saveFileName(null)
-            .contentType(null)
-            .filePath(null)
+            .fileName(defaultFileName)
+            .saveFileName("default")
+            .contentType("image/png")
+            .filePath(defaultFilePath)
             .build();
     }
 
