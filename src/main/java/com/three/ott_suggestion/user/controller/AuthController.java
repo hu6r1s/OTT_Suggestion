@@ -79,7 +79,8 @@ public class AuthController {
 
     @Operation(summary = "로그아웃", description = "로그아웃 할 수 있는 API")
     @PostMapping("/logout")
-    public ResponseEntity<CommonResponse<Void>> logout(@AuthenticationPrincipal UserDetails userDetails) {
+    public ResponseEntity<CommonResponse<Void>> logout(
+        @AuthenticationPrincipal UserDetails userDetails) {
         try {
             authService.logout(userDetails);
             return ResponseEntity.status(HttpStatus.OK.value()).body(

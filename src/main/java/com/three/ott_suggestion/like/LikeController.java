@@ -3,13 +3,13 @@ package com.three.ott_suggestion.like;
 import com.three.ott_suggestion.global.response.CommonResponse;
 import com.three.ott_suggestion.global.util.UserDetailsImpl;
 import com.three.ott_suggestion.post.dto.PostResponseDto;
-import com.three.ott_suggestion.post.entity.Post;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -27,23 +27,30 @@ public class LikeController {
     @GetMapping("/posts/{postId}/like")
     public ResponseEntity<CommonResponse<Long>> countLikes(@PathVariable Long postId) {
         return ResponseEntity.ok().body(CommonResponse.<Long>builder()
-            .data(likeService.countLikes(postId)).build());
+                .data(likeService.countLikes(postId)).build());
     }
 
     @Operation(summary = "좋아요 선택/취소", description = "좋아요 선택/취소할 수 있는 API")
     @PostMapping("/posts/{postId}/like")
-    public ResponseEntity<CommonResponse<Void>> likePost(@PathVariable Long postId,
-        @AuthenticationPrincipal
-        UserDetailsImpl userDetails) {
+    public ResponseEntity<CommonResponse<Void>> createLike(@PathVariable Long postId,
+            @AuthenticationPrincipal
+            UserDetailsImpl userDetails) {
         return ResponseEntity.ok().body(CommonResponse.<Void>builder()
-            .message(likeService.likePost(postId, userDetails.getUser())).build());
+                .message(likeService.createLike(postId, userDetails.getUser())).build());
+    }
 
+    @DeleteMapping("/posts/{postId}/like")
+    public ResponseEntity<CommonResponse<Void>> deleteLike(@PathVariable Long postId,
+            @AuthenticationPrincipal
+            UserDetailsImpl userDetails) {
+        return ResponseEntity.ok().body(CommonResponse.<Void>builder()
+                .message(likeService.deleteLike(postId, userDetails.getUser())).build());
     }
 
     @GetMapping("/posts/like/top3")
     public ResponseEntity<CommonResponse<List<PostResponseDto>>> getLikeTopThreePosts() {
         return ResponseEntity.ok().body(CommonResponse.<List<PostResponseDto>>builder()
-            .data(likeService.getLikeTopThreePosts())
-            .build());
+                .data(likeService.getLikeTopThreePosts())
+                .build());
     }
 }

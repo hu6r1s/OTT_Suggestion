@@ -7,6 +7,8 @@ import com.three.ott_suggestion.post.dto.PostResponseDto;
 import com.three.ott_suggestion.post.service.PostService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import java.io.IOException;
+import java.net.MalformedURLException;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -17,9 +19,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequiredArgsConstructor
@@ -30,10 +33,12 @@ public class PostController {
 
     @Operation(summary = "게시글 생성", description = "게시글을 작성할 수 있는 API")
     @PostMapping("/posts")
-    public ResponseEntity<CommonResponse<Void>> createPost(@RequestBody PostRequestDto requestDto,
+    public ResponseEntity<CommonResponse<Void>> createPost(
+        @RequestPart PostRequestDto requestDto,
+        @RequestPart MultipartFile image,
         @AuthenticationPrincipal
-        UserDetailsImpl userDetails) {
-        postService.createPost(requestDto, userDetails.getUser());
+        UserDetailsImpl userDetails) throws Exception {
+        postService.createPost(requestDto, userDetails.getUser(), image);
         return ResponseEntity.status(HttpStatus.CREATED.value()).body(
             CommonResponse.<Void>builder().message("게시물 생성 완료").build()
         );
@@ -49,7 +54,8 @@ public class PostController {
 
     @Operation(summary = "게시글 상세 조회", description = "게시글 상세 조회할 수 있는 API")
     @GetMapping("/posts/{postId}")
-    public ResponseEntity<CommonResponse<PostResponseDto>> getPost(@PathVariable Long postId) {
+    public ResponseEntity<CommonResponse<PostResponseDto>> getPost(@PathVariable Long postId)
+        throws MalformedURLException {
         PostResponseDto postResponseDto = postService.getPost(postId);
         return ResponseEntity.ok().body(CommonResponse.<PostResponseDto>builder()
             .data(postResponseDto).build());
@@ -70,10 +76,11 @@ public class PostController {
     public ResponseEntity<CommonResponse<PostResponseDto>> updatePost(
         @AuthenticationPrincipal UserDetailsImpl userDetails,
         @PathVariable Long postId,
-        @RequestBody PostRequestDto requestDto
-    ) {
+        @RequestPart PostRequestDto requestDto,
+        @RequestPart(required = false) MultipartFile image
+    ) throws IOException {
         PostResponseDto responseDto = postService.updatePost(userDetails.getUser().getId(), postId,
-            requestDto);
+            requestDto, image);
         return ResponseEntity.status(HttpStatus.OK.value()).body(
             CommonResponse.<PostResponseDto>builder().message("특정 게시물 수정 완료").data(responseDto)
                 .build()

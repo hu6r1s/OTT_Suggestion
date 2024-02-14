@@ -1,5 +1,7 @@
 package com.three.ott_suggestion.user.service;
 
+import com.three.ott_suggestion.image.entity.UserImage;
+import com.three.ott_suggestion.image.repository.UserImageRepository;
 import com.three.ott_suggestion.user.dto.SignupRequestDto;
 import com.three.ott_suggestion.user.entity.RefreshToken;
 import com.three.ott_suggestion.user.entity.User;
@@ -11,6 +13,7 @@ import java.io.UnsupportedEncodingException;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.RandomStringUtils;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -24,13 +27,18 @@ import org.springframework.web.server.ResponseStatusException;
 @RequiredArgsConstructor
 public class AuthService {
 
+    @Value("${defaultImage.path}")
+    private String localPath;
+
     private final UserRepository userRepository;
+    private final UserImageRepository userImageRepository;
     private final PasswordEncoder passwordEncoder;
     private final RefreshTokenRepository refreshTokenRepository;
     private final JavaMailSender mailSender;
 
     @Transactional
-    public void signup(SignupRequestDto signupRequestDto, String siteURL) throws UnsupportedEncodingException, MessagingException {
+    public void signup(SignupRequestDto signupRequestDto, String siteURL)
+        throws UnsupportedEncodingException, MessagingException {
 
         String email = signupRequestDto.getEmail();
         String password = passwordEncoder.encode(signupRequestDto.getPassword());
@@ -43,8 +51,16 @@ public class AuthService {
         if (checkUserEmail.isPresent()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "중복된 email 입니다.");
         }
-
-        User user = new User(email, password, nickname, introduction, randomCode, false);
+        String fileName = "default.jpg";
+        String filePath = localPath + fileName;
+        UserImage image = UserImage.builder()
+            .fileName(fileName)
+            .saveFileName("default")
+            .contentType("image/png")
+            .filePath(filePath)
+            .build();
+        userImageRepository.save(image);
+        User user = new User(email, password, nickname, introduction, image, randomCode, false);
         userRepository.save(user);
 
         sendVerificationEmail(user, siteURL);
@@ -73,7 +89,8 @@ public class AuthService {
         refreshTokenRepository.delete(refreshToken);
     }
 
-    private void sendVerificationEmail(User user, String siteURL) throws MessagingException, UnsupportedEncodingException {
+    private void sendVerificationEmail(User user, String siteURL)
+        throws MessagingException, UnsupportedEncodingException {
         String toAddress = user.getEmail();
         String fromAddress = "test!";
         String senderName = "three";

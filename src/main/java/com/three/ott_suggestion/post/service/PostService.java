@@ -3,6 +3,8 @@ package com.three.ott_suggestion.post.service;
 import com.three.ott_suggestion.global.exception.InvalidInputException;
 import com.three.ott_suggestion.global.exception.InvalidPostException;
 import com.three.ott_suggestion.global.exception.InvalidUserException;
+import com.three.ott_suggestion.image.entity.PostImage;
+import com.three.ott_suggestion.image.service.ImageService;
 import com.three.ott_suggestion.post.SearchType;
 import com.three.ott_suggestion.post.dto.PostRequestDto;
 import com.three.ott_suggestion.post.dto.PostResponseDto;
@@ -10,12 +12,15 @@ import com.three.ott_suggestion.post.entity.Post;
 import com.three.ott_suggestion.post.repository.PostRepository;
 import com.three.ott_suggestion.user.entity.User;
 import com.three.ott_suggestion.user.service.UserService;
+import java.io.IOException;
+import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 @Service
 @RequiredArgsConstructor
@@ -25,29 +30,45 @@ public class PostService {
 
     private final PostRepository postRepository;
     private final UserService userService;
+    private final ImageService<PostImage> postImageService;
 
     @Transactional
-    public void createPost(PostRequestDto requestDto, User user) {
-        log.info(user.getEmail());
+    public void createPost(PostRequestDto requestDto, User user, MultipartFile image)
+        throws Exception {
         Post post = new Post(requestDto, user);
+        PostImage imageUrl = postImageService.createImage(image);
+        post.createImage(imageUrl);
         postRepository.save(post);
     }
 
     public List<PostResponseDto> getAllPosts() {
-        return postRepository.findAllByDeletedAtIsNullOrderByCreatedAtDesc().stream().map(PostResponseDto::new)
+
+        return postRepository.findAllByDeletedAtIsNullOrderByCreatedAtDesc().stream().map(e -> {
+                String imageUrl;
+                try {
+                    imageUrl = postImageService.getImage(e.getPostImage().getId());
+                } catch (MalformedURLException ex) {
+                    throw new RuntimeException(ex);
+                }
+                return new PostResponseDto(e, imageUrl);
+            })
             .toList();
     }
 
-    public PostResponseDto getPost(Long postId) {
+    public PostResponseDto getPost(Long postId) throws MalformedURLException {
         Post post = postRepository.findPostByIdAndDeletedAtIsNull(postId).orElseThrow(
             () -> new InvalidInputException("해당 게시글은 삭제 되었습니다.")
         );
-        return new PostResponseDto(post);
+        String imageUrl = postImageService.getImage(post.getPostImage().getId());
+        return new PostResponseDto(post, imageUrl);
     }
 
     @Transactional
-    public PostResponseDto updatePost(Long userId, Long postId, PostRequestDto requestDto) {
+    public PostResponseDto updatePost(Long userId, Long postId, PostRequestDto requestDto,
+        MultipartFile imageFile)
+        throws IOException {
         Post post = findPost(postId);
+        postImageService.updateImage(post, imageFile);
         validateUser(userId, post);
         post.update(requestDto);
         return new PostResponseDto(post);
@@ -59,13 +80,29 @@ public class PostService {
             List<User> users = userService.findContainUser(keyword);
             for (User user : users) {
                 searchResult.add(
-                    postRepository.findByUserId(user.getId()).stream().map(PostResponseDto::new)
+                    postRepository.findByUserId(user.getId()).stream().map(e -> {
+                            String imageUrl;
+                            try {
+                                imageUrl = postImageService.getImage(e.getPostImage().getId());
+                            } catch (MalformedURLException ex) {
+                                throw new InvalidUserException("해당게시물이 존재하지 않습니다.");
+                            }
+                            return new PostResponseDto(e, imageUrl);
+                        })
                         .toList());
             }
             return searchResult;
         } else if (type.equals(SearchType.TITLE.type())) {
             searchResult.add(
-                postRepository.findByTitleContains(keyword).stream().map(PostResponseDto::new)
+                postRepository.findByTitleContains(keyword).stream().map(e -> {
+                        String imageUrl;
+                        try {
+                            imageUrl = postImageService.getImage(e.getPostImage().getId());
+                        } catch (MalformedURLException ex) {
+                            throw new InvalidUserException("해당게시물이 존재하지 않습니다.");
+                        }
+                        return new PostResponseDto(e, imageUrl);
+                    })
                     .toList());
             return searchResult;
         }
