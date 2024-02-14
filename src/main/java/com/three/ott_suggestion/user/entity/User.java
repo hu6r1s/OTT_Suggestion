@@ -40,12 +40,20 @@ public class User extends TimeStamped {
     @JoinColumn(name = "user_id")
     private UserImage userImage;
 
-    public User(String email, String password, String nickname, String introduction,UserImage image) {
+    @Column(name = "verification_code", length = 64)
+    private String verificationCode;
+
+    private boolean enabled;
+
+    public User(String email, String password, String nickname, String introduction,
+            UserImage image, String verificationCode, boolean enabled) {
         this.email = email;
         this.password = password;
         this.nickname = nickname;
         this.introduction = introduction;
         this.userImage = image;
+        this.verificationCode = verificationCode;
+        this.enabled = enabled;
     }
 
     public void update(UpdateRequestDto requestDto) {
@@ -53,7 +61,12 @@ public class User extends TimeStamped {
         this.introduction = requestDto.getIntroduction();
     }
 
-    public void updateImage(UserImage userImage){
+    public void updateImage(UserImage userImage) {
         this.userImage = userImage;
+    }
+
+    public void verify(String verificationCode, boolean enabled) {
+        this.verificationCode = verificationCode;
+        this.enabled = enabled;
     }
 }

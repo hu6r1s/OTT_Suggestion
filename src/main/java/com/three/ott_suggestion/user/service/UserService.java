@@ -1,5 +1,6 @@
 package com.three.ott_suggestion.user.service;
 
+import com.three.ott_suggestion.global.exception.InvalidInputException;
 import com.three.ott_suggestion.global.util.UserDetailsImpl;
 import com.three.ott_suggestion.image.entity.UserImage;
 import com.three.ott_suggestion.image.service.ImageService;
@@ -9,6 +10,7 @@ import com.three.ott_suggestion.user.entity.User;
 import com.three.ott_suggestion.user.repository.UserRepository;
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,22 +25,29 @@ public class UserService {
 
     public UserResponseDto getUserInfo(UserDetailsImpl userDetails) throws MalformedURLException {
         String resource = userImageService.getImage(userDetails.getUser().getUserImage().getId());
-        return new UserResponseDto(userDetails.getUser(),resource);
+        return new UserResponseDto(userDetails.getUser(), resource);
     }
 
     @Transactional
-    public void updateUserInfo(UserDetailsImpl userDetails, UpdateRequestDto requestDto, MultipartFile imageFile)
+    public void updateUserInfo(UserDetailsImpl userDetails, UpdateRequestDto requestDto,
+            MultipartFile imageFile)
             throws IOException {
         User user = userRepository.findByEmail(userDetails.getUsername()).orElseThrow(() ->
-            new IllegalArgumentException("User가 존재하지 않습니다.")
+                new IllegalArgumentException("User가 존재하지 않습니다.")
         );
-        if(!imageFile.getOriginalFilename().isEmpty()){
-            userImageService.updateImage(user,imageFile);
+        if (!imageFile.getOriginalFilename().isEmpty()) {
+            userImageService.updateImage(user, imageFile);
         }
         user.update(requestDto);
     }
 
-    public User findUser(String nickname){
-        return userRepository.findByNickname(nickname);
+    public List<User> findContainUser(String nickname) {
+        return userRepository.findByNicknameContains(nickname);
+    }
+
+    public User findUser(Long userId) {
+        return userRepository.findById(userId).orElseThrow(
+                () -> new InvalidInputException("해당 User는 존재하지 않습니다.")
+        );
     }
 }

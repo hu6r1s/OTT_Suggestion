@@ -7,7 +7,7 @@ import com.three.ott_suggestion.comment.repository.CommentRepository;
 import com.three.ott_suggestion.global.exception.AuthenticationException;
 import com.three.ott_suggestion.global.exception.InvalidInputException;
 import com.three.ott_suggestion.post.entity.Post;
-import com.three.ott_suggestion.post.repository.PostRepository;
+import com.three.ott_suggestion.post.service.PostService;
 import com.three.ott_suggestion.user.entity.User;
 import java.util.List;
 import java.util.Objects;
@@ -20,7 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class CommentService {
 
     private final CommentRepository commentRepository;
-    private final PostRepository postRepository;
+    private final PostService postService;
 
     @Transactional
     public void createComment(User user, Long postId, CommentRequestDto requestDto) {
@@ -61,9 +61,7 @@ public class CommentService {
     }
 
     private Post findPost(Long postId) {
-        return postRepository.findById(postId).orElseThrow(
-            () -> new InvalidInputException("해당하는 할 일이 없습니다.")
-        );
+        return postService.findPost(postId);
     }
 
     private Comment findComment(Long commentId) {

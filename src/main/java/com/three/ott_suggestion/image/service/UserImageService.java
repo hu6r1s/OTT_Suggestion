@@ -25,9 +25,6 @@ public class UserImageService implements ImageService<UserImage> {
     @Value("${upload.path}")
     private String uploadPath;
 
-    @Value("${defaultImage.path}")
-    private String localPath;
-
     @Override
     @Transactional
     public UserImage createImage(MultipartFile imageFile) throws Exception {
@@ -38,7 +35,8 @@ public class UserImageService implements ImageService<UserImage> {
 
     @Override
     public String getImage(Long id) {
-        UserImage image = userImageRepository.findById(id).orElseThrow(() -> new InvalidInputException("프로필 이미지가 존재하지 않습니다."));
+        UserImage image = userImageRepository.findById(id)
+                .orElseThrow(() -> new InvalidInputException("프로필 이미지가 존재하지 않습니다."));
         return image.getFilePath();
     }
 
