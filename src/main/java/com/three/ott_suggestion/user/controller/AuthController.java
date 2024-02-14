@@ -4,6 +4,8 @@ import com.three.ott_suggestion.global.response.CommonResponse;
 import com.three.ott_suggestion.global.response.ErrorResponse;
 import com.three.ott_suggestion.user.dto.SignupRequestDto;
 import com.three.ott_suggestion.user.service.AuthService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
@@ -29,10 +31,12 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/auth")
+@Tag(name = "Auth", description = "인증 컨트롤러")
 public class AuthController {
 
     private final AuthService authService;
 
+    @Operation(summary = "회원가입", description = "회원가입 할 수 있는 API")
     @PostMapping("/signup")
     public ResponseEntity<CommonResponse<List<ErrorResponse>>> signup(
         @RequestBody @Valid SignupRequestDto signupRequestDto,
@@ -61,6 +65,7 @@ public class AuthController {
         );
     }
 
+    @Operation(summary = "이메일 인증", description = "이메일 인증할 수 있는 API")
     @GetMapping("/verify")
     public ResponseEntity<CommonResponse<Void>> verifyUser(@RequestParam String code) {
         if (authService.verify(code)) {
@@ -72,6 +77,7 @@ public class AuthController {
         }
     }
 
+    @Operation(summary = "로그아웃", description = "로그아웃 할 수 있는 API")
     @PostMapping("/logout")
     public ResponseEntity<CommonResponse<Void>> logout(@AuthenticationPrincipal UserDetails userDetails) {
         try {

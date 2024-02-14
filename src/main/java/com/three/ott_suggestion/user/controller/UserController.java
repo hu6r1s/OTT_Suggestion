@@ -6,6 +6,8 @@ import com.three.ott_suggestion.global.util.UserDetailsImpl;
 import com.three.ott_suggestion.user.dto.UpdateRequestDto;
 import com.three.ott_suggestion.user.dto.UserResponseDto;
 import com.three.ott_suggestion.user.service.UserService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
@@ -26,10 +28,12 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/my")
 @RequiredArgsConstructor
+@Tag(name = "User", description = "유저 컨트롤러")
 public class UserController {
 
     private final UserService userService;
 
+    @Operation(summary = "마이페이지 조회", description = "마이페이지 정보 조회할 수 있는 API")
     @GetMapping
     public ResponseEntity<CommonResponse<UserResponseDto>> getUserInfo(
         @AuthenticationPrincipal UserDetailsImpl userDetails) {
@@ -40,6 +44,7 @@ public class UserController {
                 .data(userService.getUserInfo(userDetails)).build());
     }
 
+    @Operation(summary = "마이페이지 수정", description = "마이페이지 정보 수정할 수 있는 API")
     @PutMapping
     public ResponseEntity<CommonResponse<List<ErrorResponse>>> update(
         @AuthenticationPrincipal UserDetailsImpl userDetails,

@@ -5,6 +5,8 @@ import com.three.ott_suggestion.comment.dto.CommentResponseDto;
 import com.three.ott_suggestion.comment.service.CommentService;
 import com.three.ott_suggestion.global.response.CommonResponse;
 import com.three.ott_suggestion.global.util.UserDetailsImpl;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,10 +24,12 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 @RequiredArgsConstructor
 @RestController
+@Tag(name = "Comment", description = "댓글 컨트롤러")
 public class CommentController {
 
     private final CommentService commentService;
 
+    @Operation(summary = "댓글 조회", description = "게시글에 대한 댓글들을 조회할 수 있는 API")
     @GetMapping("/posts/{postId}/comments")
     public ResponseEntity<CommonResponse<List<CommentResponseDto>>> getComments(
         @PathVariable Long postId) {
@@ -34,6 +38,7 @@ public class CommentController {
             CommonResponse.<List<CommentResponseDto>>builder().data(responseDtos).build());
     }
 
+    @Operation(summary = "댓글 생성", description = "댓글을 작성할 수 있는 API")
     @PostMapping("/posts/{postId}/comments")
     public ResponseEntity<CommonResponse<Void>> createComment(
         @AuthenticationPrincipal UserDetailsImpl userDetails,
@@ -44,6 +49,7 @@ public class CommentController {
             CommonResponse.<Void>builder().message("댓글 생성 완료").build());
     }
 
+    @Operation(summary = "댓글 수정", description = "댓글을 수정할 수 있는 API")
     @PutMapping("/posts/{postId}/comments/{commentId}")
     public ResponseEntity<CommonResponse<Void>> updateComment(
         @AuthenticationPrincipal UserDetailsImpl userDetails,
@@ -55,6 +61,7 @@ public class CommentController {
             CommonResponse.<Void>builder().message("댓글 수정 완료").build());
     }
 
+    @Operation(summary = "댓글 삭제", description = "댓글을 삭제할 수 있는 API")
     @DeleteMapping("/posts/{postId}/comments/{commentId}")
     public ResponseEntity<CommonResponse<Void>> deleteComment(
         @AuthenticationPrincipal UserDetailsImpl userDetails,
