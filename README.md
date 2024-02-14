@@ -43,7 +43,7 @@
 
 ## ERD
 
-![스크린샷 2024-02-14 오후 9 06 34](https://github.com/threethreethreethree/OTT_Suggestion/assets/154495684/4303b419-c5e4-4d88-86f9-785c7e73c46d)
+![스크린샷 2024-02-14 오후 9 27 19](https://github.com/threethreethreethree/OTT_Suggestion/assets/154495684/c0cb10b6-ddf9-4a31-a503-a33da7a54d8b)
 
 
 ## 환경 변수
