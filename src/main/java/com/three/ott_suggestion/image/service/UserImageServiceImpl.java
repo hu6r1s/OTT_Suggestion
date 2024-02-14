@@ -1,12 +1,12 @@
 package com.three.ott_suggestion.image.service;
 
+
 import com.three.ott_suggestion.global.exception.InvalidInputException;
-import com.three.ott_suggestion.image.entity.PostImage;
-import com.three.ott_suggestion.image.repository.PostImageRepository;
-import com.three.ott_suggestion.post.entity.Post;
+import com.three.ott_suggestion.image.entity.UserImage;
+import com.three.ott_suggestion.image.repository.UserImageRepository;
+import com.three.ott_suggestion.user.entity.User;
 import java.io.File;
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -14,49 +14,52 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
-public class PostImageService implements ImageService<PostImage> {
+public class UserImageServiceImpl implements ImageService<UserImage> {
+
+    private final UserImageRepository userImageRepository;
 
     @Value("${upload.path}")
     private String uploadPath;
 
-    private final PostImageRepository postImageRepository;
-
     @Override
     @Transactional
-    public PostImage createImage(MultipartFile file) throws Exception {
-        PostImage image = getPostImage(file);
-        postImageRepository.save(image);
+    public UserImage createImage(MultipartFile imageFile) throws Exception {
+        UserImage image = getUserImage(imageFile);
+        userImageRepository.save(image);
         return image;
     }
 
     @Override
-    public String getImage(Long id) throws MalformedURLException {
-        PostImage image = postImageRepository.findById(id)
-            .orElseThrow(() -> new InvalidInputException("게시물 이미지가 존재하지 않습니다"));
+    public String getImage(Long id) {
+        UserImage image = userImageRepository.findById(id)
+            .orElseThrow(() -> new InvalidInputException("프로필 이미지가 존재하지 않습니다."));
         return image.getFilePath();
     }
 
+
     @Transactional
     @Override
-    public void updateImage(Post post, MultipartFile imageFile) throws IOException {
-        PostImage image = getPostImage(imageFile);
-        PostImage postImage = postImageRepository.findById(post.getPostImage().getId())
-            .orElseThrow(() -> new InvalidInputException("게시물 이미지가 존재하지 않습니다"));
-        postImage.updatePostImage(image);
+    public void updateImage(User user, MultipartFile imageFile) throws IOException {
+        UserImage image = getUserImage(imageFile);
+        UserImage userImage = userImageRepository.findById(user.getUserImage().getId())
+            .orElseThrow(() -> new InvalidInputException("프로필 이미지가 존재하지 않습니다."));
+        userImage.updateUserImage(image);
     }
 
-    private PostImage getPostImage(MultipartFile file) throws IOException {
-        String originalFilename = file.getOriginalFilename();
+    private UserImage getUserImage(MultipartFile imageFile) throws IOException {
+        String originalFilename = imageFile.getOriginalFilename();
         String saveFileName = createSaveFileName(originalFilename);
-        file.transferTo(new File(getFullPath(saveFileName)));
+        imageFile.transferTo(new File(getFullPath(saveFileName)));
+
         String filePath = uploadPath + saveFileName;
 
-        String contentType = file.getContentType();
+        String contentType = imageFile.getContentType();
 
-        PostImage image = PostImage.builder()
+        UserImage image = UserImage.builder()
             .fileName(originalFilename)
             .saveFileName(saveFileName)
             .contentType(contentType)
@@ -64,6 +67,7 @@ public class PostImageService implements ImageService<PostImage> {
             .build();
         return image;
     }
+
 
     private String createSaveFileName(String originalFilename) {
         String ext = extractExt(originalFilename);
@@ -79,6 +83,4 @@ public class PostImageService implements ImageService<PostImage> {
     private String getFullPath(String filename) {
         return uploadPath + filename;
     }
-
-
 }
