@@ -51,7 +51,7 @@ public class AuthService {
         if (checkUserEmail.isPresent()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "중복된 email 입니다.");
         }
-        String fileName = "1.jpg";
+        String fileName = "default.jpg";
         String filePath = localPath + fileName;
         UserImage image = UserImage.builder()
                 .fileName(fileName)
