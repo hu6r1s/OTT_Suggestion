@@ -10,6 +10,14 @@
 - 팀명 : threethreethreethree
 - 멤버 : 3조 (팀장 정현준, 임현태, 박희은, 조우석, 송선호)
 
+## 기술 스택
+
+- Spring Boot
+- Spring Security
+- Java Mail
+- Swagger
+- AWS EC2 & RDS
+
 ## 구현 목표
 
 - 필수 기능 구현
