@@ -35,12 +35,12 @@ public class PostController {
     @PostMapping("/posts")
     public ResponseEntity<CommonResponse<Void>> createPost(
         @RequestPart PostRequestDto requestDto,
-        @RequestPart MultipartFile image,
+        @RequestPart(required = false) MultipartFile image,
         @AuthenticationPrincipal
         UserDetailsImpl userDetails) throws Exception {
         postService.createPost(requestDto, userDetails.getUser(), image);
         return ResponseEntity.status(HttpStatus.CREATED.value()).body(
-            CommonResponse.<Void>builder().message("게시물 생성 완료").build()
+            CommonResponse.<Void>builder().message("게시글 생성이 완료되었습니다.").build()
         );
     }
 
@@ -73,16 +73,16 @@ public class PostController {
 
     @Operation(summary = "게시글 수정", description = "게시글을 수정할 수 있는 API")
     @PutMapping("/posts/{postId}")
-    public ResponseEntity<CommonResponse<PostResponseDto>> updatePost(
+    public ResponseEntity<CommonResponse<Void>> updatePost(
         @AuthenticationPrincipal UserDetailsImpl userDetails,
         @PathVariable Long postId,
         @RequestPart PostRequestDto requestDto,
         @RequestPart(required = false) MultipartFile image
     ) throws IOException {
-        PostResponseDto responseDto = postService.updatePost(userDetails.getUser().getId(), postId,
+        postService.updatePost(userDetails.getUser().getId(), postId,
             requestDto, image);
         return ResponseEntity.status(HttpStatus.OK.value()).body(
-            CommonResponse.<PostResponseDto>builder().message("특정 게시물 수정 완료").data(responseDto)
+            CommonResponse.<Void>builder().message("게시글이 수정되었습니다.")
                 .build()
         );
     }
@@ -94,6 +94,6 @@ public class PostController {
         @PathVariable Long postId) {
         postService.deletePost(userDetails.getUser(), postId);
         return ResponseEntity.status(HttpStatus.OK.value()).body(
-            CommonResponse.<Void>builder().message("게시물 삭제 완료").build());
+            CommonResponse.<Void>builder().message("게시글 삭제가 완료되었습니다").build());
     }
 }

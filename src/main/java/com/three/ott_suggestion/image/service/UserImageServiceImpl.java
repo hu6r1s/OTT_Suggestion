@@ -18,22 +18,20 @@ import org.springframework.web.multipart.MultipartFile;
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
-public class UserImageServiceImpl implements ImageService<UserImage> {
+public class UserImageServiceImpl {
 
     private final UserImageRepository userImageRepository;
 
     @Value("${upload.path}")
     private String uploadPath;
 
-    @Override
     @Transactional
-    public UserImage createImage(MultipartFile imageFile) throws Exception {
+    public UserImage createImage(MultipartFile imageFile, User user) throws Exception {
         UserImage image = getUserImage(imageFile);
         userImageRepository.save(image);
         return image;
     }
 
-    @Override
     public String getImage(Long id) {
         UserImage image = userImageRepository.findById(id)
             .orElseThrow(() -> new InvalidInputException("프로필 이미지가 존재하지 않습니다."));
@@ -42,30 +40,37 @@ public class UserImageServiceImpl implements ImageService<UserImage> {
 
 
     @Transactional
-    @Override
     public void updateImage(User user, MultipartFile imageFile) throws IOException {
         UserImage image = getUserImage(imageFile);
-        UserImage userImage = userImageRepository.findById(user.getUserImage().getId())
+        UserImage userImage = userImageRepository.findByUserId(user.getId())
             .orElseThrow(() -> new InvalidInputException("프로필 이미지가 존재하지 않습니다."));
         userImage.updateUserImage(image);
     }
 
     private UserImage getUserImage(MultipartFile imageFile) throws IOException {
-        String originalFilename = imageFile.getOriginalFilename();
-        String saveFileName = createSaveFileName(originalFilename);
-        imageFile.transferTo(new File(getFullPath(saveFileName)));
+        if (!imageFile.isEmpty()) {
+            String originalFilename = imageFile.getOriginalFilename();
+            String saveFileName = createSaveFileName(originalFilename);
+            imageFile.transferTo(new File(getFullPath(saveFileName)));
 
-        String filePath = uploadPath + saveFileName;
+            String filePath = uploadPath + saveFileName;
 
-        String contentType = imageFile.getContentType();
+            String contentType = imageFile.getContentType();
 
-        UserImage image = UserImage.builder()
-            .fileName(originalFilename)
-            .saveFileName(saveFileName)
-            .contentType(contentType)
-            .filePath(filePath)
+            UserImage image = UserImage.builder()
+                .fileName(originalFilename)
+                .saveFileName(saveFileName)
+                .contentType(contentType)
+                .filePath(filePath)
+                .build();
+            return image;
+        }
+        return UserImage.builder()
+            .fileName(null)
+            .saveFileName(null)
+            .contentType(null)
+            .filePath(null)
             .build();
-        return image;
     }
 
 

@@ -1,6 +1,5 @@
 package com.three.ott_suggestion.comment.dto;
 
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 

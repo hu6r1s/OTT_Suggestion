@@ -3,12 +3,11 @@ package com.three.ott_suggestion.post.service;
 import com.three.ott_suggestion.global.exception.InvalidInputException;
 import com.three.ott_suggestion.global.exception.InvalidPostException;
 import com.three.ott_suggestion.global.exception.InvalidUserException;
-import com.three.ott_suggestion.image.entity.PostImage;
-import com.three.ott_suggestion.image.service.ImageService;
-import com.three.ott_suggestion.post.entity.SearchType;
+import com.three.ott_suggestion.image.service.PostImageServiceImpl;
 import com.three.ott_suggestion.post.dto.PostRequestDto;
 import com.three.ott_suggestion.post.dto.PostResponseDto;
 import com.three.ott_suggestion.post.entity.Post;
+import com.three.ott_suggestion.post.entity.SearchType;
 import com.three.ott_suggestion.post.repository.PostRepository;
 import com.three.ott_suggestion.user.entity.User;
 import com.three.ott_suggestion.user.service.UserService;
@@ -30,15 +29,14 @@ public class PostService {
 
     private final PostRepository postRepository;
     private final UserService userService;
-    private final ImageService<PostImage> postImageService;
+    private final PostImageServiceImpl postImageService;
 
     @Transactional
     public void createPost(PostRequestDto requestDto, User user, MultipartFile image)
         throws Exception {
         Post post = new Post(requestDto, user);
-        PostImage imageUrl = postImageService.createImage(image);
-        post.createImage(imageUrl);
         postRepository.save(post);
+        postImageService.createImage(image, post);
     }
 
     public List<PostResponseDto> getAllPosts() {
@@ -46,7 +44,7 @@ public class PostService {
         return postRepository.findAllByDeletedAtIsNullOrderByCreatedAtDesc().stream().map(e -> {
                 String imageUrl;
                 try {
-                    imageUrl = postImageService.getImage(e.getPostImage().getId());
+                    imageUrl = postImageService.getImage(e.getId());
                 } catch (MalformedURLException ex) {
                     throw new RuntimeException(ex);
                 }
@@ -59,19 +57,18 @@ public class PostService {
         Post post = postRepository.findPostByIdAndDeletedAtIsNull(postId).orElseThrow(
             () -> new InvalidInputException("해당 게시글은 삭제 되었습니다.")
         );
-        String imageUrl = postImageService.getImage(post.getPostImage().getId());
+        String imageUrl = postImageService.getImage(post.getId());
         return new PostResponseDto(post, imageUrl);
     }
 
     @Transactional
-    public PostResponseDto updatePost(Long userId, Long postId, PostRequestDto requestDto,
+    public void updatePost(Long userId, Long postId, PostRequestDto requestDto,
         MultipartFile imageFile)
         throws IOException {
         Post post = findPost(postId);
         postImageService.updateImage(post, imageFile);
         validateUser(userId, post);
         post.update(requestDto);
-        return new PostResponseDto(post);
     }
 
     public List<List<PostResponseDto>> searchPost(String type, String keyword) {
@@ -83,7 +80,7 @@ public class PostService {
                     postRepository.findByUserId(user.getId()).stream().map(e -> {
                             String imageUrl;
                             try {
-                                imageUrl = postImageService.getImage(e.getPostImage().getId());
+                                imageUrl = postImageService.getImage(e.getId());
                             } catch (MalformedURLException ex) {
                                 throw new InvalidUserException("해당게시물이 존재하지 않습니다.");
                             }
@@ -97,7 +94,7 @@ public class PostService {
                 postRepository.findByTitleContains(keyword).stream().map(e -> {
                         String imageUrl;
                         try {
-                            imageUrl = postImageService.getImage(e.getPostImage().getId());
+                            imageUrl = postImageService.getImage(e.getId());
                         } catch (MalformedURLException ex) {
                             throw new InvalidUserException("해당게시물이 존재하지 않습니다.");
                         }
