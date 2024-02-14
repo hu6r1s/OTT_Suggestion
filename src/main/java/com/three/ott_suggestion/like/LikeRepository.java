@@ -16,5 +16,6 @@ public interface LikeRepository extends JpaRepository<Like, Long> {
         "GROUP BY l.postId " +
         "ORDER BY likeCount DESC LIMIT 3"
     )
-    List<Object[]> findTop3MostLikedPosts();
+    List<Object[]> findTop3LikedPosts();
 }
+

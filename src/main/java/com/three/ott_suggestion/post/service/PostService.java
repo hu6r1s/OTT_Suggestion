@@ -34,7 +34,7 @@ public class PostService {
     }
 
     public List<PostResponseDto> getAllPosts() {
-        return postRepository.findAllByDeletedAtIsNull().stream().map(PostResponseDto::new)
+        return postRepository.findAllByDeletedAtIsNullOrderByCreatedAtDesc().stream().map(PostResponseDto::new)
             .toList();
     }
 

@@ -2,6 +2,7 @@ package com.three.ott_suggestion.like;
 
 import com.three.ott_suggestion.global.response.CommonResponse;
 import com.three.ott_suggestion.global.util.UserDetailsImpl;
+import com.three.ott_suggestion.post.dto.PostResponseDto;
 import com.three.ott_suggestion.post.entity.Post;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -39,10 +40,10 @@ public class LikeController {
 
     }
 
-    @GetMapping("/posts/sort")
-    public List<Like> highCountSorted(
-        @AuthenticationPrincipal UserDetailsImpl userDetails
-    ) {
-        return likeService.highCountSorted();
+    @GetMapping("/posts/like/top3")
+    public ResponseEntity<CommonResponse<List<PostResponseDto>>> getLikeTopThreePosts() {
+        return ResponseEntity.ok().body(CommonResponse.<List<PostResponseDto>>builder()
+            .data(likeService.getLikeTopThreePosts())
+            .build());
     }
 }
