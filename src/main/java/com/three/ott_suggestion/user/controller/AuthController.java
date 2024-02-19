@@ -44,20 +44,6 @@ public class AuthController {
         BindingResult bindingResult
     )
         throws UnsupportedEncodingException, MessagingException {
-
-        // Validation 예외처리
-        if (bindingResult.hasErrors()) {
-            List<FieldError> fieldErrors = bindingResult.getFieldErrors();
-            List<ErrorResponse> ErrorResponseList = new ArrayList<>();
-            for (FieldError fieldError : fieldErrors) {
-                ErrorResponse exceptionResponse = new ErrorResponse(fieldError.getDefaultMessage());
-                ErrorResponseList.add(exceptionResponse);
-            }
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST.value()).body(
-                CommonResponse.<List<ErrorResponse>>builder().message("회원가입 실패")
-                    .data(ErrorResponseList).build());
-        }
-
         authService.signup(signupRequestDto, getSiteURL(request));
 
         return ResponseEntity.status(HttpStatus.OK.value()).body(
