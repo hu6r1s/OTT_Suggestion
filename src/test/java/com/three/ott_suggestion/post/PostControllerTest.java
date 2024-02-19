@@ -1,8 +1,7 @@
 package com.three.ott_suggestion.post;
 
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -100,6 +99,24 @@ public class PostControllerTest {
         )
             .andExpect(status().isCreated())
             .andExpect(jsonPath("$.message").value("게시글 생성이 완료되었습니다."))
+            .andDo(print());
+    }
+
+    @Test
+    @DisplayName("게시물 전체 조회")
+    void 게시글_전체_조회() throws Exception {
+        mvc.perform(get("/posts"))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.data").exists())
+            .andDo(print());
+    }
+
+    @Test
+    @DisplayName("게시물 상세 조회")
+    void 게시글_상세_조회() throws Exception {
+        mvc.perform(get("/posts/{postId}", 1))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.data.id").value(1))
             .andDo(print());
     }
 }
