@@ -34,7 +34,7 @@ public class PostController {
     @Operation(summary = "게시글 생성", description = "게시글을 작성할 수 있는 API")
     @PostMapping("/posts")
     public ResponseEntity<CommonResponse<Void>> createPost(
-        @RequestPart PostRequestDto requestDto,
+        @RequestPart(value = "dto") PostRequestDto requestDto,
         @RequestPart(required = false) MultipartFile image,
         @AuthenticationPrincipal
         UserDetailsImpl userDetails) throws Exception {
