@@ -40,8 +40,7 @@ public class AuthController {
     @PostMapping("/signup")
     public ResponseEntity<CommonResponse<List<ErrorResponse>>> signup(
         @RequestBody @Valid SignupRequestDto signupRequestDto,
-        HttpServletRequest request,
-        BindingResult bindingResult
+        HttpServletRequest request
     )
         throws UnsupportedEncodingException, MessagingException {
         authService.signup(signupRequestDto, getSiteURL(request));

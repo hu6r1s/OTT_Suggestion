@@ -2,9 +2,11 @@ package com.three.ott_suggestion.user.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @Getter
+@AllArgsConstructor
 public class SignupRequestDto {
 
     @NotBlank(message = "이메일은 필수 입력 값입니다.")
