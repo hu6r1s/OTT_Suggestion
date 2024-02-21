@@ -76,7 +76,7 @@ public class PostController {
     public ResponseEntity<CommonResponse<Void>> updatePost(
         @AuthenticationPrincipal UserDetailsImpl userDetails,
         @PathVariable Long postId,
-        @RequestPart PostRequestDto requestDto,
+        @RequestPart(value = "dto") PostRequestDto requestDto,
         @RequestPart(required = false) MultipartFile image
     ) throws IOException {
         postService.updatePost(userDetails.getUser().getId(), postId,
