@@ -5,7 +5,6 @@ import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -21,8 +20,10 @@ import com.three.ott_suggestion.comment.entity.Comment;
 import com.three.ott_suggestion.comment.service.CommentService;
 import com.three.ott_suggestion.global.config.SecurityConfig;
 import com.three.ott_suggestion.global.util.UserDetailsImpl;
+import com.three.ott_suggestion.post.controller.PostController;
 import com.three.ott_suggestion.post.dto.PostRequestDto;
 import com.three.ott_suggestion.post.entity.Post;
+import com.three.ott_suggestion.post.service.PostService;
 import com.three.ott_suggestion.user.controller.AuthController;
 import com.three.ott_suggestion.user.entity.User;
 import com.three.ott_suggestion.user.service.AuthService;
@@ -39,17 +40,13 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.FilterType;
 import org.springframework.http.MediaType;
-import org.springframework.mock.web.MockHttpServletRequest;
-import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.request.MockMultipartHttpServletRequestBuilder;
-import org.springframework.test.web.servlet.request.RequestPostProcessor;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
 @WebMvcTest(
-    controllers = {AuthController.class, CommentController.class},
+    controllers = {AuthController.class, CommentController.class, PostController.class},
     excludeFilters = {
         @ComponentScan.Filter(
             type = FilterType.ASSIGNABLE_TYPE,
@@ -72,6 +69,9 @@ public class CommentControllerTest {
 
     @MockBean
     CommentService commentService;
+
+    @MockBean
+    PostService postService;
 
     private User user;
 
@@ -149,7 +149,7 @@ public class CommentControllerTest {
         // when - then
         mvc.perform(put("/posts/{postId}/comments/{commentId}", 1L, 1L)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(request).getBytes(StandardCharsets.UTF_8))
+                .content(objectMapper.writeValueAsString(request))
                 .accept(MediaType.APPLICATION_JSON)
                 .principal(mockPrincipal))
             .andExpect(status().isOk())
